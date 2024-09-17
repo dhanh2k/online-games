@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: lavender;
+        }
+
+        .signinForm {
+            width: 30%;
+            background-color: white;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+        }
+
+        h1 {
+            margin: 0.5rem 0;
+        }
+
+        form input {
+            width: 100%;
+            margin: 0.5rem 0;
+            padding: 0.5rem 0;
+            border-radius: 20px;
+            border: 1px solid whitesmoke;
+        }
+
+        form button {
+            width: 100%;
+            margin: 0.5rem 0;
+            padding: 0.5rem 0;
+            border-radius: 20px;
+            background-color: blue;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="signinForm">
+        <h1>Sign In</h1>
+        <form action="">
+            <input type="text" placeholder="username">
+            <input type="password" placeholder="password">
+            <button>Sign In</button>
+            <button>Log In</button>
+        </form>
+    </div>
+</body>
+</html>

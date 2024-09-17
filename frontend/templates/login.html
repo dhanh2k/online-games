@@ -4,16 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: lavender;
+        }
+
+        .wrapper {
+            width: 30%;
+            padding: 2rem 1rem;
+            background-color: #fff;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;}
+
+        h1 {
+            font-size: 2rem;
+            color: black;
+            margin-bottom: 1.2rem;
+        }
+
+        form input {
+            width: 100%;
+            outline: none;
+            border: 1px solid white;
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            border-radius: 20px;
+            background-color: #e4e4e4;
+        }
+
+        button {
+            font-size: 1rem;
+            margin-top: 1.8rem;
+            padding: 10px 0;
+            border-radius: 20px;
+            outline: none;
+            border: none;
+            width: 100%;
+            color: #fff;
+            cursor: pointer;
+            background: rgb(17, 107, 143);
+        }
+
+        button:hover {
+            background: rgba(17, 107, 143, 0.8);
+        }
+
+        input:focus {
+            border: 1px solid rgb(192, 192, 192);
+        }
+    </style>
 </head>
 <body>
-    <form action="" method="post">
-        <input type="text" name="username" placeholder="username">
-        <br>
-        <input type="password" name="password" placeholder="password">
-        <br>
-        <button type="submit">Login</button>
-        <br>
-        <button type="button">Register</button>
-    </form>
+    <div class="wrapper">
+        <h1>Log In</h1>
+        <form action="">
+            <input type="text" placeholder="username">
+            <input type="password" placeholder="password">
+        </form>
+        <button>Log In</button>
+        <button>Sign In</button>
+    </div>
 </body>
 </html>
