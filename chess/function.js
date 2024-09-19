@@ -52,8 +52,8 @@ export function createPieceElements(chessboardElement, reverse){
     // pieces.push(new Piece(7, 6, "pawn", "black", reverse))
 
     //for testing
-    pieces.push(new Piece(0, 0, "king", "white", reverse))
     pieces.push(new Piece(3, 7, "king", "black", reverse))
+    pieces.push(new Piece(3, 3, "king", "white", reverse))
 
     pieces.forEach(piece => {
         chessboardElement.appendChild(piece.pieceElement)
