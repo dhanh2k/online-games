@@ -2,7 +2,7 @@ import { createCellElements, createPieceElements } from "./function.js"
 
 export default class ChessBoard {
     constructor(chessboardElement) {
-        this.reverse = true
+        this.reverse = false
         this.cells = this.reverse == false ? createCellElements(chessboardElement).map((cellElement, index) => {
             return new Cell(index % 8, Math.floor(index / 8), cellElement)
         }) : createCellElements(chessboardElement).reverse().map((cellElement, index) => {
@@ -23,6 +23,6 @@ class Cell {
         } else {
             this.cellElement.classList.add("black")
         }
-        // this.cellElement.innerHTML = this.x + "•" + this.y
+        this.cellElement.innerHTML = this.x + "•" + this.y
     }
 }

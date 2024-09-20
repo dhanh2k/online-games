@@ -50,7 +50,7 @@ body {
     pointer-events: none;
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 425px) {
     #chessboard {
         grid-template-columns: repeat(8, 11vw);
         grid-template-rows: repeat(8, 11vw);
