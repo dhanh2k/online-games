@@ -1,0 +1,26 @@
+GET http://localhost:5000/
+
+###
+
+GET http://localhost:5000/user/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmVlNzIxNTFmZjhkMTI2YTE3MzNmYWUiLCJlbWFpbCI6ImR1b25naG9hbmdhbmgxODAzNjU2MUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6ImRoYW5oMDYiLCJwYXNzd29yZCI6IiQyYiQxMCRlYi85SlA2S2ZEZzRDWkVRV1JxLmR1Rzg5MGpGUE83YmI4clJOeVVTZ0x5ZHFRS0JmVWlFSyIsIl9fdiI6MCwiaWF0IjoxNzI2OTA3MTg5LCJleHAiOjE3MjY5MDcyNDl9.SsVBXBCWcpgBILkPxnasgytKYFPsdfri-LSidHXcFKE
+###
+
+POST http://localhost:5000/user/
+Content-Type: application/json
+
+{
+    "email": "duonghoanganh18036561@gmail.com",
+    "username": "dhanh06",
+    "password": "12345"
+}
+
+###
+
+POST http://localhost:5000/user/login
+Content-Type: application/json
+
+{
+    "username": "dhanh06",
+    "password": "12345"
+}
