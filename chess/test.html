@@ -6,14 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Document</title>
     <style>
-        body {
-            overscroll-behavior: none;
-        }
-
         .dot {
             background-color: red;
-            width: 4rem;
-            height: 4rem;
+            width: 1rem;
+            height: 1rem;
             border-radius: 50%;
             position: absolute;
             transform: translate(-50%, -50%);
@@ -28,45 +24,47 @@
             margin: 0;
         }
     </style>
+    
+</head>
+
+<body>
+    <div id="top-half"></div>
     <script>
-        document.addEventListener("touchstart", e => {
+        const topHalf = document.getElementById("top-half")
+        topHalf.addEventListener("touchstart", e => {
             e.preventDefault()
-            if([e.changedTouches].length > 1){
-                console.log("one touch")
-            }
-                ;[...e.changedTouches].forEach(touch => {
-                    console.log(touch)
-                    const dot = document.createElement("div")
-                    dot.classList.add("dot")
-                    dot.style.top = `${touch.pageY}px`
-                    dot.style.left = `${touch.pageX}px`
-                    dot.id = touch.identifier
-                    document.body.append(dot)
-                })
+            console.log("Touches", e.touches.length)
+            console.log("Targets", e.targetTouches.length)
+            console.log("Changed", e.changedTouches.length)
+        })
+
+        document.addEventListener("touchstart", e => {
+            ;[...e.changedTouches].forEach(touch => {
+                const dot = document.createElement("div")
+                dot.classList.add("dot")
+                dot.style.top = `${touch.clientY}px`
+                dot.style.left = `${touch.clientX}px`
+                dot.id = touch.identifier
+                document.body.append(dot)
+            })
         })
 
         document.addEventListener("touchmove", e => {
-            e.preventDefault();
             [...e.changedTouches].forEach(touch => {
                 const dot = document.getElementById(touch.identifier)
-                dot.style.top = `${touch.pageY}px`
-                dot.style.left = `${touch.pageX}px`
+                dot.style.top = `${touch.clientY}px`
+                dot.style.left = `${touch.clientX}px`
             })
         })
 
         document.addEventListener("touchend", e => {
-            e.preventDefault();
             [...e.changedTouches].forEach(touch => {
-                console.log(touch)
+                // console.log(touch)
                 const dot = document.getElementById(touch.identifier)
                 dot.remove()
             })
         })
     </script>
-</head>
-
-<body>
-    <div id="top-half"></div>
 </body>
 
 </html>
