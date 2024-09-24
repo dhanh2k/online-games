@@ -75,6 +75,29 @@ chessboard.pieces.forEach(piece => {
     })
 })
 
-export function sayHello(){
+chessboard.pieces.forEach(piece => {
+    piece.pieceElement.addEventListener("touchstart", (e) => {
+        piece.pieceElement.style.setProperty("width", "22vw")
+        piece.pieceElement.style.setProperty("height", "22vw")
+        e.preventDefault()
+        const touch = [...e.changedTouches][0]
+        piece.pieceElement.addEventListener("touchmove", e => {
+            const touch = [...e.changedTouches][0]
+            if (touch.clientY - chessboardElement.offsetTop < 0) {
+                piece.pieceElement.style.top = 0
+            } else {
+                piece.pieceElement.style.top = `${touch.clientY - chessboardElement.offsetTop}px`
+            }
+            piece.pieceElement.style.left = `${touch.clientX - chessboardElement.offsetLeft}px`
+        })
+        piece.pieceElement.addEventListener("touchend", e => {
+            console.log("End")
+            piece.pieceElement.style.setProperty("width", "11vw")
+            piece.pieceElement.style.setProperty("height", "11vw")
+        })
+    })
+})
+
+export function sayHello() {
     console.log("Hello")
 }

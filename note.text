@@ -1,2 +1,4 @@
-giải pháp 1: tìm cách setProperty với media screen
-giải pháp 2: thay đỗi tọa độ theo số âm
+- điều chỉnh biến css chung cho tất cả các thuộc tính
+- làm tăng kích thước quân cờ khi chạm và về kích thước bình thường khi bỏ ra
+- không cho kéo quân cờ ra khỏi bàn cờ
+- xác định vị trí quân cờ đang đặt
