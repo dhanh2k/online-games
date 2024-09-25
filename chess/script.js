@@ -13,6 +13,7 @@ chessboard.pieces.forEach(piece => {
     piece.pieceElement.addEventListener("mousedown", () => {
         document.addEventListener("mousemove", document.fn = function fn(e) {
             piece.pieceElement.style.setProperty("cursor", "grabbing")
+            piece.pieceElement.style.setProperty("z-index", "1")
 
             if (e.clientY < chessboardElement.offsetTop) {
                 piece.pieceElement.style.top = -4 + 'vh'
@@ -68,6 +69,7 @@ chessboard.pieces.forEach(piece => {
 
         document.addEventListener("mouseup", document.fn1 = function fn1() {
             piece.pieceElement.style.setProperty("cursor", "grab")
+            piece.pieceElement.style.setProperty("z-index", "0")
 
             document.removeEventListener("mousemove", document.fn)
             document.removeEventListener('mouseup', document.fn1)
@@ -75,25 +77,89 @@ chessboard.pieces.forEach(piece => {
     })
 })
 
+let xTouch = undefined, yTouch = undefined
+
 chessboard.pieces.forEach(piece => {
     piece.pieceElement.addEventListener("touchstart", (e) => {
-        piece.pieceElement.style.setProperty("width", "22vw")
-        piece.pieceElement.style.setProperty("height", "22vw")
         e.preventDefault()
-        const touch = [...e.changedTouches][0]
+        const touch = [...e.changedTouches][0];
+
+        const dot = document.createElement("div")
+        dot.classList.add("dot")
+        dot.style.top = `${touch.clientY}px`
+        dot.style.left = `${touch.clientX}px`
+        dot.id = touch.identifier
+        document.body.append(dot)
+
+        piece.pieceElement.style.setProperty("transform", "scale(3,3)")
+        piece.pieceElement.style.setProperty("z-index", "1")
+
         piece.pieceElement.addEventListener("touchmove", e => {
             const touch = [...e.changedTouches][0]
-            if (touch.clientY - chessboardElement.offsetTop < 0) {
-                piece.pieceElement.style.top = 0
+
+            const dot = document.getElementById(touch.identifier)
+            dot.style.top = `${touch.clientY}px`
+            dot.style.left = `${touch.clientX}px`
+
+            if (touch.clientY < chessboardElement.offsetTop) {
+                piece.pieceElement.style.top = -6 + 'vw'
+                if (chessboard.reverse) {
+                    yTouch = 7
+                } else {
+                    yTouch = 0
+                }
             } else {
-                piece.pieceElement.style.top = `${touch.clientY - chessboardElement.offsetTop}px`
+                if (touch.clientY > (chessboardElement.offsetTop + (document.documentElement.clientWidth * 0.96))) {
+                    piece.pieceElement.style.top = 90 + 'vw'
+                    if (chessboard.reverse) {
+                        yTouch = 0
+                    } else {
+                        yTouch = 7
+                    }
+                } else {
+                    piece.pieceElement.style.top = touch.clientY - (chessboardElement.offsetTop) - (document.documentElement.clientWidth * 0.06) + 'px'
+                    if (chessboard.reverse) {
+                        yTouch = 7 - Math.floor((touch.clientY - (chessboardElement.offsetTop)) / (document.documentElement.clientWidth * 0.12))
+                    } else {
+                        yTouch = Math.floor((touch.clientY - (chessboardElement.offsetTop)) / (document.documentElement.clientWidth * 0.12))
+                    }
+                }
             }
-            piece.pieceElement.style.left = `${touch.clientX - chessboardElement.offsetLeft}px`
+
+            if (touch.clientX < chessboardElement.offsetLeft) {
+                piece.pieceElement.style.left = -6 + 'vw'
+                if (chessboard.reverse) {
+                    xTouch = 7
+                } else {
+                    xTouch = 0
+                }
+            } else {
+                if (touch.clientX > (chessboardElement.offsetLeft + (document.documentElement.clientWidth * 0.96))) {
+                    piece.pieceElement.style.left = 90 + 'vw'
+                    if (chessboard.reverse) {
+                        xTouch = 0
+                    } else {
+                        xTouch = 7
+                    }
+                } else {
+                    piece.pieceElement.style.left = touch.clientX - (chessboardElement.offsetLeft) - (document.documentElement.clientWidth * 0.06) + 'px'
+                    if (chessboard.reverse) {
+                        xTouch = 7 - Math.floor((touch.clientX - (chessboardElement.offsetLeft)) / (document.documentElement.clientWidth * 0.12))
+                    } else {
+                        xTouch = Math.floor((touch.clientX - (chessboardElement.offsetLeft)) / (document.documentElement.clientWidth * 0.12))
+                    }
+                }
+            }
+
+            console.log("X: ", xTouch, "Y: ", yTouch)
         })
+
         piece.pieceElement.addEventListener("touchend", e => {
-            console.log("End")
-            piece.pieceElement.style.setProperty("width", "11vw")
-            piece.pieceElement.style.setProperty("height", "11vw")
+            const touch = [...e.changedTouches][0];
+            const dot = document.getElementById(touch.identifier)
+            dot.remove()
+            piece.pieceElement.style.setProperty("transform", "scale(1,1)")
+            piece.pieceElement.style.setProperty("z-index", "0")
         })
     })
 })

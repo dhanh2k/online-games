@@ -52,12 +52,23 @@ body {
 
 @media screen and (max-width: 425px) {
     #chessboard {
-        grid-template-columns: repeat(8, 11vw);
-        grid-template-rows: repeat(8, 11vw);
+        grid-template-columns: repeat(8, 12vw);
+        grid-template-rows: repeat(8, 12vw);
     }
 
     .piece {
-        width: 11vw;
-        height: 11vw;
+        width: 12vw;
+        height: 12vw;
     }
+}
+
+/* test for touchevent */
+.dot {
+    background-color: red;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 2;
 }

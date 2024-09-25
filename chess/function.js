@@ -66,7 +66,7 @@ export function setPlacementForMobile(chessboard) {
     function myFunction(x) {
         if (x.matches) {
             chessboard.pieces.forEach(piece => {
-                piece.pieceElement.style.setProperty("--cell-size", "11vw")
+                piece.pieceElement.style.setProperty("--cell-size", "12vw")
             })
         } else {
             chessboard.pieces.forEach(piece => {
