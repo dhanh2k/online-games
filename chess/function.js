@@ -66,12 +66,16 @@ export function setPlacementForMobile(chessboard) {
     function myFunction(x) {
         if (x.matches) {
             chessboard.pieces.forEach(piece => {
-                piece.pieceElement.style.setProperty("--cell-size", "12vw")
+                // piece.pieceElement.style.setProperty("--cell-size", "12vw")
+                // chessboard.chessboardElement.style.setProperty("--cell-size", "12vw")
+                document.documentElement.style.setProperty("--cell-size", "12vw")
+
             })
             dragPieceOnMobile(chessboard, chessboard.chessboardElement)
         } else {
             chessboard.pieces.forEach(piece => {
-                piece.pieceElement.style.setProperty("--cell-size", "8vh")
+                // piece.pieceElement.style.setProperty("--cell-size", "8vh")
+                document.documentElement.style.setProperty("--cell-size", "8vh")
             })
             dragPieceOnDesktop(chessboard, chessboard.chessboardElement)
         }
@@ -96,28 +100,32 @@ export function dragPieceOnDesktop(chessboard, chessboardElement){
             document.addEventListener("mousemove", document.fn = function fn(e) {
                 piece.pieceElement.style.setProperty("cursor", "grabbing")
                 piece.pieceElement.style.setProperty("z-index", "1")
-    
+                
+                // console.log(viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
+
                 if (e.clientY < chessboardElement.offsetTop) {
-                    piece.pieceElement.style.top = -4 + 'vh'
+                    piece.pieceElement.style.setProperty("top", "calc(-0.5 * var(--cell-size)")
                     if (chessboard.reverse) {
                         y = 7
                     } else {
                         y = 0
                     }
                 } else {
-                    if (e.clientY > (chessboardElement.offsetTop + (document.documentElement.clientHeight * 0.64))) {
-                        piece.pieceElement.style.top = 60 + 'vh'
+                    if (e.clientY > (chessboardElement.offsetTop + viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')) * 8)) {
+                        piece.pieceElement.style.setProperty("top", "calc(7.5 * var(--cell-size)")
                         if (chessboard.reverse) {
                             y = 0
                         } else {
                             y = 7
                         }
                     } else {
-                        piece.pieceElement.style.top = e.clientY - (chessboardElement.offsetTop) - (document.documentElement.clientHeight * 0.04) + 'px'
+                        // piece.pieceElement.style.top = e.clientY - (chessboardElement.offsetTop) - (document.documentElement.clientHeight * 0.04) + 'px'
+                        // piece.pieceElement.style.setProperty("top", `calc(${e.clientY} - ${chessboardElement.offsetTop} - ${viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size'))}/2`)
+
                         if (chessboard.reverse) {
                             y = 7 - Math.floor((e.clientY - (chessboardElement.offsetTop)) / (document.documentElement.clientHeight * 0.08))
                         } else {
-                            y = Math.floor((e.clientY - (chessboardElement.offsetTop)) / (document.documentElement.clientHeight * 0.08))
+                            y = Math.floor((e.clientY - (chessboardElement.offsetTop)) / viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
                         }
                     }
                 }
@@ -241,4 +249,13 @@ export function dragPieceOnMobile(chessboard, chessboardElement){
             yTouch = undefined
         })
     })
+}
+
+export function viewportToPixel(unit){
+    switch(unit){
+        case "12vw":
+            return window.innerWidth * 12 / 100
+        case "8vh":
+            return window.innerHeight * 8 / 100
+    }
 }

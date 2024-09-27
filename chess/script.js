@@ -6,11 +6,4 @@ const chessboardElement = document.getElementById("chessboard")
 const chessboard = new ChessBoard(chessboardElement)
 
 setPlacementForMobile(chessboard)
-
-// dragPieceOnDesktop(chessboard, chessboardElement)
-
-// dragPieceOnMobile(chessboard, chessboardElement)
-
-export function sayHello() {
-    console.log("Hello")
-}
+// dragPieceOnDesktop(chessboard, chessboard.chessboardElement)
