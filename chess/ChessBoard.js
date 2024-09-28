@@ -23,6 +23,6 @@ class Cell {
         } else {
             this.cellElement.classList.add("black")
         }
-        this.cellElement.innerHTML = this.x + "•" + this.y
+        this.cellElement.innerHTML = this.x + "," + this.y
     }
 }

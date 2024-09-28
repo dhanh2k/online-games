@@ -5,5 +5,6 @@ const chessboardElement = document.getElementById("chessboard")
 
 const chessboard = new ChessBoard(chessboardElement)
 
-setPlacementForMobile(chessboard)
-// dragPieceOnDesktop(chessboard, chessboard.chessboardElement)
+setPlacementForMobile()
+dragPieceOnDesktop(chessboard, chessboard.chessboardElement)
+dragPieceOnMobile(chessboard, chessboard.chessboardElement)

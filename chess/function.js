@@ -62,22 +62,12 @@ export function createPieceElements(chessboardElement, reverse) {
     return pieces
 }
 
-export function setPlacementForMobile(chessboard) {
+export function setPlacementForMobile() {
     function myFunction(x) {
         if (x.matches) {
-            chessboard.pieces.forEach(piece => {
-                // piece.pieceElement.style.setProperty("--cell-size", "12vw")
-                // chessboard.chessboardElement.style.setProperty("--cell-size", "12vw")
-                document.documentElement.style.setProperty("--cell-size", "12vw")
-
-            })
-            dragPieceOnMobile(chessboard, chessboard.chessboardElement)
+            document.documentElement.style.setProperty("--cell-size", "12vw")
         } else {
-            chessboard.pieces.forEach(piece => {
-                // piece.pieceElement.style.setProperty("--cell-size", "8vh")
-                document.documentElement.style.setProperty("--cell-size", "8vh")
-            })
-            dragPieceOnDesktop(chessboard, chessboard.chessboardElement)
+            document.documentElement.style.setProperty("--cell-size", "8vh")
         }
     }
 
@@ -91,7 +81,7 @@ export function setPlacementForMobile(chessboard) {
     });
 }
 
-export function dragPieceOnDesktop(chessboard, chessboardElement){
+export function dragPieceOnDesktop(chessboard, chessboardElement) {
     let x = undefined, y = undefined
     chessboard.pieces.forEach(piece => {
         piece.pieceElement.addEventListener("mousedown", () => {
@@ -100,8 +90,6 @@ export function dragPieceOnDesktop(chessboard, chessboardElement){
             document.addEventListener("mousemove", document.fn = function fn(e) {
                 piece.pieceElement.style.setProperty("cursor", "grabbing")
                 piece.pieceElement.style.setProperty("z-index", "1")
-                
-                // console.log(viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
 
                 if (e.clientY < chessboardElement.offsetTop) {
                     piece.pieceElement.style.setProperty("top", "calc(-0.5 * var(--cell-size)")
@@ -119,52 +107,56 @@ export function dragPieceOnDesktop(chessboard, chessboardElement){
                             y = 7
                         }
                     } else {
-                        // piece.pieceElement.style.top = e.clientY - (chessboardElement.offsetTop) - (document.documentElement.clientHeight * 0.04) + 'px'
-                        // piece.pieceElement.style.setProperty("top", `calc(${e.clientY} - ${chessboardElement.offsetTop} - ${viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size'))}/2`)
+                        const flag = document.documentElement.style.getPropertyValue('--cell-size')
+                        const unit = viewportToPixel(flag) / 2
+                        piece.pieceElement.style.setProperty("top", `calc(${e.clientY}px - ${chessboardElement.offsetTop}px - ${unit}px)`)
 
                         if (chessboard.reverse) {
-                            y = 7 - Math.floor((e.clientY - (chessboardElement.offsetTop)) / (document.documentElement.clientHeight * 0.08))
+                            y = 7 - Math.floor((e.clientY - (chessboardElement.offsetTop)) / viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
                         } else {
                             y = Math.floor((e.clientY - (chessboardElement.offsetTop)) / viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
                         }
                     }
                 }
-    
+
                 if (e.clientX < chessboardElement.offsetLeft) {
-                    piece.pieceElement.style.left = -4 + 'vh'
+                    piece.pieceElement.style.setProperty("left", "calc(-0.5 * var(--cell-size)")
                     if (chessboard.reverse) {
                         x = 7
                     } else {
                         x = 0
                     }
                 } else {
-                    if (e.clientX > (chessboardElement.offsetLeft + (document.documentElement.clientHeight * 0.64))) {
-                        piece.pieceElement.style.left = 60 + 'vh'
+                    if (e.clientX > (chessboardElement.offsetLeft + viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')) * 8)) {
+                        piece.pieceElement.style.setProperty("left", "calc(7.5 * var(--cell-size)")
                         if (chessboard.reverse) {
-                            y = 0
+                            x = 0
                         } else {
-                            y = 7
+                            x = 7
                         }
                     } else {
-                        piece.pieceElement.style.left = e.clientX - (chessboardElement.offsetLeft) - (document.documentElement.clientHeight * 0.04) + 'px'
+                        const flag = document.documentElement.style.getPropertyValue('--cell-size')
+                        const unit = viewportToPixel(flag) / 2
+                        piece.pieceElement.style.setProperty("left", `calc(${e.clientX}px - ${chessboardElement.offsetLeft}px - ${unit}px)`)
                         if (chessboard.reverse) {
-                            x = 7 - Math.floor((e.clientX - (chessboardElement.offsetLeft)) / (document.documentElement.clientHeight * 0.08))
+                            x = 7 - Math.floor((e.clientX - (chessboardElement.offsetLeft)) / viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
                         } else {
-                            x = Math.floor((e.clientX - (chessboardElement.offsetLeft)) / (document.documentElement.clientHeight * 0.08))
+                            x = Math.floor((e.clientX - (chessboardElement.offsetLeft)) / viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
                         }
                     }
                 }
-                console.log("X: ", x, "Y: ", y)
+                console.log({ x, y })
             })
-    
+
             document.addEventListener("mouseup", document.fn1 = function fn1() {
-                piece.pieceElement.style.setProperty("cursor", "grab")
-                piece.pieceElement.style.setProperty("z-index", "0")
-    
                 document.removeEventListener("mousemove", document.fn)
                 document.removeEventListener('mouseup', document.fn1)
-    
+
+                piece.pieceElement.style.setProperty("cursor", "grab")
+                piece.pieceElement.style.setProperty("z-index", "0")
+
                 piece.rePlacePiece(x, y)
+
                 x = undefined
                 y = undefined
                 console.log(piece)
@@ -173,86 +165,115 @@ export function dragPieceOnDesktop(chessboard, chessboardElement){
     })
 }
 
-export function dragPieceOnMobile(chessboard, chessboardElement){
-    let xTouch = undefined, yTouch = undefined
+export function dragPieceOnMobile(chessboard, chessboardElement) {
+    let x = undefined, y = undefined
     chessboard.pieces.forEach(piece => {
         piece.pieceElement.addEventListener("touchstart", (e) => {
             e.preventDefault()
-            xTouch = piece.x
-            yTouch = piece.y
-    
+            x = piece.x
+            y = piece.y
+
+            //for test
+            const touch = [...e.changedTouches][0]
+
+            const dot = document.createElement("div")
+            dot.classList.add("dot")
+            dot.style.top = `${touch.clientY}px`
+            dot.style.left = `${touch.clientX}px`
+            dot.id = touch.identifier
+            document.body.append(dot)
+            //for test
+
             piece.pieceElement.style.setProperty("transform", "scale(3,3)")
             piece.pieceElement.style.setProperty("z-index", "1")
         })
-    
+
         piece.pieceElement.addEventListener("touchmove", e => {
             const touch = [...e.changedTouches][0]
-    
+
+            //for test
+            const dot = document.getElementById(touch.identifier)
+            dot.style.top = `${touch.clientY}px`
+            dot.style.left = `${touch.clientX}px`
+            //for test
+
             if (touch.clientY < chessboardElement.offsetTop) {
-                piece.pieceElement.style.top = -6 + 'vw'
+                piece.pieceElement.style.setProperty("top", "calc(-0.5 * var(--cell-size)")
                 if (chessboard.reverse) {
-                    yTouch = 7
+                    y = 7
                 } else {
-                    yTouch = 0
+                    y = 0
                 }
             } else {
-                if (touch.clientY > (chessboardElement.offsetTop + (document.documentElement.clientWidth * 0.96))) {
-                    piece.pieceElement.style.top = 90 + 'vw'
+                if (touch.clientY > (chessboardElement.offsetTop + viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')) * 8)) {
+                    piece.pieceElement.style.setProperty("top", "calc(7.5 * var(--cell-size)")
                     if (chessboard.reverse) {
-                        yTouch = 0
+                        y = 0
                     } else {
-                        yTouch = 7
+                        y = 7
                     }
                 } else {
-                    piece.pieceElement.style.top = touch.clientY - (chessboardElement.offsetTop) - (document.documentElement.clientWidth * 0.06) + 'px'
+                    const flag = document.documentElement.style.getPropertyValue('--cell-size')
+                    const unit = viewportToPixel(flag) / 2
+                    piece.pieceElement.style.setProperty("top", `calc(${touch.clientY}px - ${chessboardElement.offsetTop}px - ${unit}px)`)
+
                     if (chessboard.reverse) {
-                        yTouch = 7 - Math.floor((touch.clientY - (chessboardElement.offsetTop)) / (document.documentElement.clientWidth * 0.12))
+                        y = 7 - Math.floor((touch.clientY - (chessboardElement.offsetTop)) / viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
                     } else {
-                        yTouch = Math.floor((touch.clientY - (chessboardElement.offsetTop)) / (document.documentElement.clientWidth * 0.12))
+                        y = Math.floor((touch.clientY - (chessboardElement.offsetTop)) / viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
                     }
                 }
             }
-    
+
             if (touch.clientX < chessboardElement.offsetLeft) {
-                piece.pieceElement.style.left = -6 + 'vw'
+                piece.pieceElement.style.setProperty("left", "calc(-0.5 * var(--cell-size)")
                 if (chessboard.reverse) {
-                    xTouch = 7
+                    x = 7
                 } else {
-                    xTouch = 0
+                    x = 0
                 }
             } else {
-                if (touch.clientX > (chessboardElement.offsetLeft + (document.documentElement.clientWidth * 0.96))) {
-                    piece.pieceElement.style.left = 90 + 'vw'
+                if (touch.clientX > (chessboardElement.offsetLeft + + viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')) * 8)) {
+                    piece.pieceElement.style.setProperty("left", "calc(7.5 * var(--cell-size)")
                     if (chessboard.reverse) {
-                        xTouch = 0
+                        x = 0
                     } else {
-                        xTouch = 7
+                        x = 7
                     }
                 } else {
-                    piece.pieceElement.style.left = touch.clientX - (chessboardElement.offsetLeft) - (document.documentElement.clientWidth * 0.06) + 'px'
+                    const flag = document.documentElement.style.getPropertyValue('--cell-size')
+                    const unit = viewportToPixel(flag) / 2
+                    piece.pieceElement.style.setProperty("left", `calc(${touch.clientX}px - ${chessboardElement.offsetLeft}px - ${unit}px)`)
                     if (chessboard.reverse) {
-                        xTouch = 7 - Math.floor((touch.clientX - (chessboardElement.offsetLeft)) / (document.documentElement.clientWidth * 0.12))
+                        x = 7 - Math.floor((touch.clientX - (chessboardElement.offsetLeft)) / viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
                     } else {
-                        xTouch = Math.floor((touch.clientX - (chessboardElement.offsetLeft)) / (document.documentElement.clientWidth * 0.12))
+                        x = Math.floor((touch.clientX - (chessboardElement.offsetLeft)) / viewportToPixel(document.documentElement.style.getPropertyValue('--cell-size')))
                     }
                 }
             }
-    
-            console.log("X: ", xTouch, "Y: ", yTouch)
+
+            console.log({ x, y })
         })
-    
-        piece.pieceElement.addEventListener("touchend", () => {
+
+        piece.pieceElement.addEventListener("touchend", (e) => {
+            const touch = [...e.changedTouches][0]
+
             piece.pieceElement.style.setProperty("transform", "scale(1,1)")
             piece.pieceElement.style.setProperty("z-index", "0")
-            piece.rePlacePiece(xTouch, yTouch)
-            xTouch = undefined
-            yTouch = undefined
+            piece.rePlacePiece(x, y)
+            x = undefined
+            y = undefined
+
+            //for test
+            const dot = document.getElementById(touch.identifier)
+            dot.remove()
+            //for test
         })
     })
 }
 
-export function viewportToPixel(unit){
-    switch(unit){
+export function viewportToPixel(unit) {
+    switch (unit) {
         case "12vw":
             return window.innerWidth * 12 / 100
         case "8vh":

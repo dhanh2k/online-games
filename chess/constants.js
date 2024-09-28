@@ -1,1 +1,0 @@
-export const PIECE_IN_TOP_BORDER = ""
