@@ -1,4 +1,4 @@
-- điều chỉnh biến css chung cho tất cả các thuộc tính
-- làm tăng kích thước quân cờ khi chạm và về kích thước bình thường khi bỏ ra
-- không cho kéo quân cờ ra khỏi bàn cờ
-- xác định vị trí quân cờ đang đặt
+- tạo hàm xác định các nước đi hợp lệ của quân cờ đó
+- tạo hàm kết xuất thành lịch sử quân cờ khi quân cờ đã thực hiện
+    duy chuyển một nước đi hợp lệ
+- tạo hàm nhập mã nước đi và quân cờ sẽ di chuyển trên bàn cờ

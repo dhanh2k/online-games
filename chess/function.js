@@ -155,11 +155,14 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
                 piece.pieceElement.style.setProperty("cursor", "grab")
                 piece.pieceElement.style.setProperty("z-index", "0")
 
-                piece.rePlacePiece(x, y)
+                removePiece(chessboard, x, y, piece)
+
+                // piece.rePlacePiece(x, y)
 
                 x = undefined
                 y = undefined
-                console.log(piece)
+
+                console.log(chessboard.pieces)
             })
         })
     })
@@ -260,7 +263,10 @@ export function dragPieceOnMobile(chessboard, chessboardElement) {
 
             piece.pieceElement.style.setProperty("transform", "scale(1,1)")
             piece.pieceElement.style.setProperty("z-index", "0")
-            piece.rePlacePiece(x, y)
+
+            removePiece(chessboard, x, y, piece)
+
+            // piece.rePlacePiece(x, y)
             x = undefined
             y = undefined
 
@@ -278,5 +284,26 @@ export function viewportToPixel(unit) {
             return window.innerWidth * 12 / 100
         case "8vh":
             return window.innerHeight * 8 / 100
+    }
+}
+
+export function findPiece(chessboard, x, y) {
+    return chessboard.pieces.filter((piece) => {
+        return piece.x == x && piece.y == y
+    })[0]
+}
+
+export function removePiece(chessboard, x, y, piece) {
+    const targetPiece = findPiece(chessboard, x, y)
+    if (targetPiece) {
+        if (piece.color != targetPiece.color) {
+            targetPiece.pieceElement.remove()
+            chessboard.pieces.splice(chessboard.pieces.indexOf(targetPiece), 1)
+            piece.rePlacePiece(x, y)
+        }else{
+            piece.rePlacePiece(piece.x, piece.y)
+        }
+    }else{
+        piece.rePlacePiece(x, y)
     }
 }
