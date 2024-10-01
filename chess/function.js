@@ -87,6 +87,11 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
         piece.pieceElement.addEventListener("mousedown", () => {
             x = piece.x
             y = piece.y
+
+            //find available Move
+            // console.log(findAvailableMove(piece, x, y))
+            console.log(deleteBlockedMove(piece, chessboard, findAvailableMove(piece, x, y)))
+
             document.addEventListener("mousemove", document.fn = function fn(e) {
                 piece.pieceElement.style.setProperty("cursor", "grabbing")
                 piece.pieceElement.style.setProperty("z-index", "1")
@@ -300,10 +305,616 @@ export function removePiece(chessboard, x, y, piece) {
             targetPiece.pieceElement.remove()
             chessboard.pieces.splice(chessboard.pieces.indexOf(targetPiece), 1)
             piece.rePlacePiece(x, y)
-        }else{
+        } else {
             piece.rePlacePiece(piece.x, piece.y)
         }
-    }else{
+    } else {
         piece.rePlacePiece(x, y)
     }
 }
+
+export function findAvailableMove(piece, x, y) {
+    switch (piece.type) {
+        case "king":
+            const kingCoordinates = [
+                [x - 1, y - 1], [x, y - 1], [x + 1, y - 1],
+                [x - 1, y], [x + 1, y],
+                [x - 1, y + 1], [x, y + 1], [x + 1, y + 1]
+            ]
+
+            const kingAvailableCoordinates = kingCoordinates.filter((value) => {
+                return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+            })
+
+            return kingAvailableCoordinates
+
+        case "queen":
+            const queenCoordinates = [
+                [x, y + 1], [x, y + 2], [x, y + 3], [x, y + 4], [x, y + 5], [x, y + 6], [x, y + 7],
+                [x, y - 1], [x, y - 2], [x, y - 3], [x, y - 4], [x, y - 5], [x, y - 6], [x, y - 7],
+                [x - 1, y], [x - 2, y], [x - 3, y], [x - 4, y], [x - 5, y], [x - 6, y], [x - 7, y],
+                [x + 1, y], [x + 2, y], [x + 3, y], [x + 4, y], [x + 5, y], [x + 6, y], [x + 7, y],
+                [x - 1, y - 1], [x - 2, y - 2], [x - 3, y - 3], [x - 4, y - 4], [x - 5, y - 5], [x - 6, y - 6], [x - 7, y - 7],
+                [x + 1, y + 1], [x + 2, y + 2], [x + 3, y + 3], [x + 4, y + 4], [x + 5, y + 5], [x + 6, y + 6], [x + 7, y + 7],
+                [x + 1, y - 1], [x + 2, y - 2], [x + 3, y - 3], [x + 4, y - 4], [x + 5, y - 5], [x + 6, y - 6], [x + 7, y - 7],
+                [x - 1, y + 1], [x - 2, y + 2], [x - 3, y + 3], [x - 4, y + 4], [x - 5, y + 5], [x - 6, y + 6], [x - 7, y + 7]
+            ]
+
+            const queenAvailableCoordinates = queenCoordinates.filter((value) => {
+                return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+            })
+
+            return queenAvailableCoordinates
+        case "bishop":
+            const bishopCoordinates = [
+                [x - 1, y - 1], [x - 2, y - 2], [x - 3, y - 3], [x - 4, y - 4], [x - 5, y - 5], [x - 6, y - 6], [x - 7, y - 7],
+                [x + 1, y + 1], [x + 2, y + 2], [x + 3, y + 3], [x + 4, y + 4], [x + 5, y + 5], [x + 6, y + 6], [x + 7, y + 7],
+                [x + 1, y - 1], [x + 2, y - 2], [x + 3, y - 3], [x + 4, y - 4], [x + 5, y - 5], [x + 6, y - 6], [x + 7, y - 7],
+                [x - 1, y + 1], [x - 2, y + 2], [x - 3, y + 3], [x - 4, y + 4], [x - 5, y + 5], [x - 6, y + 6], [x - 7, y + 7]
+            ]
+
+            const bishopAvailableCoordinates = bishopCoordinates.filter((value) => {
+                return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+            })
+
+            return bishopAvailableCoordinates
+        case "knight":
+            const knightCoordinates = [
+                [x - 1, y - 2], [x + 1, y - 2],
+                [x - 2, y - 1], [x - 2, y + 1],
+                [x + 2, y - 1], [x + 2, y + 1],
+                [x - 1, y + 2], [x + 1, y + 2]
+            ]
+
+            const KnightAvailableCoordinates = knightCoordinates.filter((value) => {
+                return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+            })
+
+            return KnightAvailableCoordinates
+        case "rook":
+            const rookCoordinates = [
+                [x, y + 1], [x, y + 2], [x, y + 3], [x, y + 4], [x, y + 5], [x, y + 6], [x, y + 7],
+                [x, y - 1], [x, y - 2], [x, y - 3], [x, y - 4], [x, y - 5], [x, y - 6], [x, y - 7],
+                [x - 1, y], [x - 2, y], [x - 3, y], [x - 4, y], [x - 5, y], [x - 6, y], [x - 7, y],
+                [x + 1, y], [x + 2, y], [x + 3, y], [x + 4, y], [x + 5, y], [x + 6, y], [x + 7, y]
+            ]
+
+            const rookAvailableCoordinates = rookCoordinates.filter((value) => {
+                return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+            })
+
+            return rookAvailableCoordinates
+        // case "pawn":
+        //     if (piece.color == "white") {
+        //         const whitePawnCoordinates = [[x, y + 1], [x - 1, y + 1], [x + 1, y + 1]]
+        //         if (y == 1) {
+        //             whitePawnCoordinates.push([x, y + 2])
+        //         }
+
+        //         const whitePawnAvailableCoordinates = whitePawnCoordinates.filter((value) => {
+        //             return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+        //         })
+
+        //         return whitePawnAvailableCoordinates
+        //     }
+        //     if (piece.color == "black") {
+        //         const blackPawnCoordinates = [[x, y - 1], [x - 1, y - 1], [x + 1, y - 1]]
+        //         if (y == 6) {
+        //             blackPawnCoordinates.push([x, y - 2])
+        //         }
+
+        //         const blackPawnAvailableCoordinates = blackPawnCoordinates.filter((value) => {
+        //             return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+        //         })
+
+        //         return blackPawnAvailableCoordinates
+        //     }
+    }
+}
+
+export function deleteBlockedMove(piece, chessboard, coordinates) {
+    // lastMovedPiece nhằm tìm nước tốt vừa mới đi để bắt tốt ngang đường
+    let topLeftBlocked = false
+    let topRightBlocked = false
+    let botLeftBlocked = false
+    let botRightBlocked = false
+    let topBlocked = false
+    let botBlocked = false
+    let leftBlocked = false
+    let rightBlocked = false
+    const leftCastlingMoves = []
+    const rightCastlingMoves = []
+    const availableCoordinates = []
+
+    if (piece.type == "bishop") {
+        coordinates.forEach(arr => {
+            // chéo lên trái
+            if (piece.x - arr[0] > 0 && piece.y - arr[1] > 0) {
+                // console.log(arr[0], arr[1])
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (topLeftBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        topLeftBlocked = true
+                    } else {
+                        if (topLeftBlocked == false) {
+                            availableCoordinates.push(arr)
+                            topLeftBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // chéo lên phải
+            if (piece.x - arr[0] < 0 && piece.y - arr[1] > 0) {
+                // console.log(arr[0], arr[1])
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (topRightBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        topRightBlocked = true
+                    } else {
+                        if (topRightBlocked == false) {
+                            availableCoordinates.push(arr)
+                            topRightBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // chéo xuống trái
+            if (piece.x - arr[0] > 0 && piece.y - arr[1] < 0) {
+                // console.log(arr[0], arr[1])
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (botLeftBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        botLeftBlocked = true
+                    } else {
+                        if (botLeftBlocked == false) {
+                            availableCoordinates.push(arr)
+                            botLeftBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // chéo xuống phải
+            if (piece.x - arr[0] < 0 && piece.y - arr[1] < 0) {
+                // console.log(arr[0], arr[1])
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (botRightBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        botRightBlocked = true
+                    } else {
+                        if (botRightBlocked == false) {
+                            availableCoordinates.push(arr)
+                            botRightBlocked = true
+                        }
+                    }
+                }
+            }
+        })
+
+        return availableCoordinates
+    }
+
+    if (piece.type == "rook") {
+        coordinates.forEach(arr => {
+            // đi lên
+            if (piece.x == arr[0] && piece.y - arr[1] > 0) {
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (topBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        topBlocked = true
+                    } else {
+                        if (topBlocked == false) {
+                            availableCoordinates.push(arr)
+                            topBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // đi xuống
+            if (piece.x == arr[0] && piece.y - arr[1] < 0) {
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (botBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        botBlocked = true
+                    } else {
+                        if (botBlocked == false) {
+                            availableCoordinates.push(arr)
+                            botBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // qua trái
+            if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (leftBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        leftBlocked = true
+                    } else {
+                        if (leftBlocked == false) {
+                            availableCoordinates.push(arr)
+                            leftBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // qua phải
+            if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (rightBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        rightBlocked = true
+                    } else {
+                        if (rightBlocked == false) {
+                            availableCoordinates.push(arr)
+                            rightBlocked = true
+                        }
+                    }
+                }
+            }
+        })
+
+        return availableCoordinates
+    }
+
+    if (piece.type == "queen") {
+        coordinates.forEach(arr => {
+            // chéo lên trái
+            if (piece.x - arr[0] > 0 && piece.y - arr[1] > 0) {
+                // console.log(arr[0], arr[1])
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (topLeftBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        topLeftBlocked = true
+                    } else {
+                        if (topLeftBlocked == false) {
+                            availableCoordinates.push(arr)
+                            topLeftBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // chéo lên phải
+            if (piece.x - arr[0] < 0 && piece.y - arr[1] > 0) {
+                // console.log(arr[0], arr[1])
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (topRightBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        topRightBlocked = true
+                    } else {
+                        if (topRightBlocked == false) {
+                            availableCoordinates.push(arr)
+                            topRightBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // chéo xuống trái
+            if (piece.x - arr[0] > 0 && piece.y - arr[1] < 0) {
+                // console.log(arr[0], arr[1])
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (botLeftBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        botLeftBlocked = true
+                    } else {
+                        if (botLeftBlocked == false) {
+                            availableCoordinates.push(arr)
+                            botLeftBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // chéo xuống phải
+            if (piece.x - arr[0] < 0 && piece.y - arr[1] < 0) {
+                // console.log(arr[0], arr[1])
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (botRightBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        botRightBlocked = true
+                    } else {
+                        if (botRightBlocked == false) {
+                            availableCoordinates.push(arr)
+                            botRightBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // đi lên
+            if (piece.x == arr[0] && piece.y - arr[1] > 0) {
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (topBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        topBlocked = true
+                    } else {
+                        if (topBlocked == false) {
+                            availableCoordinates.push(arr)
+                            topBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // đi xuống
+            if (piece.x == arr[0] && piece.y - arr[1] < 0) {
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (botBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        botBlocked = true
+                    } else {
+                        if (botBlocked == false) {
+                            availableCoordinates.push(arr)
+                            botBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // qua trái
+            if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (leftBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        leftBlocked = true
+                    } else {
+                        if (leftBlocked == false) {
+                            availableCoordinates.push(arr)
+                            leftBlocked = true
+                        }
+                    }
+                }
+            }
+
+            // qua phải
+            if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
+                if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                    if (rightBlocked == false) {
+                        availableCoordinates.push(arr)
+                    }
+                }
+                else {
+                    if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                        rightBlocked = true
+                    } else {
+                        if (rightBlocked == false) {
+                            availableCoordinates.push(arr)
+                            rightBlocked = true
+                        }
+                    }
+                }
+            }
+        })
+
+        return availableCoordinates
+    }
+
+    if (piece.type == "knight") {
+        coordinates.forEach(arr => {
+            if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+                if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+                    availableCoordinates.push(arr)
+                }
+            } else {
+                availableCoordinates.push(arr)
+            }
+        })
+
+        return availableCoordinates
+    }
+
+    if (piece.type == "king") {
+        coordinates.forEach(arr => {
+            if (Math.abs(piece.x - arr[0]) >= 2 || Math.abs(piece.y - arr[1]) >= 2) {
+                // qua trai
+                if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
+                    if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                        if (leftBlocked == false) {
+                            leftCastlingMoves.push(arr)
+                        }
+                    }
+                    else {
+                        leftBlocked = true
+                    }
+                }
+
+                //qua phai
+                if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
+                    if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                        if (rightBlocked == false) {
+                            if (Math.abs(piece.x - arr[0]) != 3) {
+                                rightCastlingMoves.push(arr)
+                            }
+                        }
+                    }
+                    else {
+                        rightBlocked = true
+                    }
+                }
+            } else {
+                if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+                    //
+                    //qua trai
+                    if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
+                        leftBlocked = true
+                    }
+
+                    //qua phai
+                    if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
+                        rightBlocked = true
+                    }
+                    //
+                    if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+                        availableCoordinates.push(arr)
+                    }
+                } else {
+                    availableCoordinates.push(arr)
+                }
+            }
+        })
+
+        if (leftBlocked == false) {
+            availableCoordinates.push(...leftCastlingMoves)
+        }
+
+        if (rightBlocked == false) {
+            availableCoordinates.push(...rightCastlingMoves)
+        }
+
+        return availableCoordinates
+    }
+
+    if (piece.type == "pawn") {
+        if (piece.color == "white") {
+            coordinates.forEach(arr => {
+                //nước tiến về phía trước
+                if (piece.x == arr[0] && piece.y - arr[1] < 0) {
+                    if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                        if (topBlocked == false) {
+                            availableCoordinates.push(arr)
+                        }
+                    } else {
+                        topBlocked = true
+                    }
+                }
+                // các nước đi chéo
+                else {
+                    if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+                        if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+                            availableCoordinates.push(arr)
+                        }
+                    }
+                    // bat tot ngang duong
+                    else {
+                        if (piece.y == 4) {
+                            if (findPiece(chessboard, arr[0], arr[1] - 1) != undefined) {
+                                console.log(findPiece(chessboard, arr[0], arr[1] - 1))
+
+                                if (findPiece(chessboard, arr[0], arr[1] - 1).type == "pawn" &&
+                                    findPiece(chessboard, arr[0], arr[1] - 1).color == "black" &&
+                                    findPiece(chessboard, arr[0], arr[1] - 1) == lastMovedPiece) {
+                                    availableCoordinates.push(arr)
+                                }
+                            }
+                        }
+
+                    }
+                }
+            })
+        }
+
+        if (piece.color == "black") {
+            coordinates.forEach(arr => {
+                //nước tiến về phía trước
+                if (piece.x == arr[0] && piece.y - arr[1] > 0) {
+                    if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                        if (topBlocked == false) {
+                            availableCoordinates.push(arr)
+                        }
+                    } else {
+                        topBlocked = true
+                    }
+                }
+                // các nước đi chéo
+                else {
+                    if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+                        if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+                            availableCoordinates.push(arr)
+                        }
+                    }
+                    // bat tot ngang duong
+                    else {
+                        if (piece.y == 3) {
+                            if (findPiece(chessboard, arr[0], arr[1] + 1) != undefined) {
+                                console.log(findPiece(chessboard, arr[0], arr[1] + 1))
+                                if (findPiece(chessboard, arr[0], arr[1] + 1).type == "pawn" &&
+                                    findPiece(chessboard, arr[0], arr[1] + 1).color == "white" &&
+                                    findPiece(chessboard, arr[0], arr[1] + 1) == lastMovedPiece) {
+                                    availableCoordinates.push(arr)
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+        }
+
+        return availableCoordinates
+    }
+}
+
