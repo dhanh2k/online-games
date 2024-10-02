@@ -83,6 +83,7 @@ export function setPlacementForMobile() {
 
 export function dragPieceOnDesktop(chessboard, chessboardElement) {
     let x = undefined, y = undefined
+    let lastMovedPiece = undefined
     chessboard.pieces.forEach(piece => {
         piece.pieceElement.addEventListener("mousedown", () => {
             x = piece.x
@@ -90,7 +91,8 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
 
             //find available Move
             // console.log(findAvailableMove(piece, x, y))
-            console.log(deleteBlockedMove(piece, chessboard, findAvailableMove(piece, x, y)))
+            // console.log(deleteBlockedMove(piece, chessboard, findAvailableMove(piece, x, y)))
+            highlightAvailableMove(chessboard, deleteBlockedMove(piece, chessboard, findAvailableMove(piece, x, y), lastMovedPiece))
 
             document.addEventListener("mousemove", document.fn = function fn(e) {
                 piece.pieceElement.style.setProperty("cursor", "grabbing")
@@ -160,14 +162,19 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
                 piece.pieceElement.style.setProperty("cursor", "grab")
                 piece.pieceElement.style.setProperty("z-index", "0")
 
-                removePiece(chessboard, x, y, piece)
+                if (piece.x != x || piece.y != y) {
+                    lastMovedPiece = piece
+                }
 
-                // piece.rePlacePiece(x, y)
+                movePiece(chessboard, x, y, piece)
 
                 x = undefined
                 y = undefined
 
-                console.log(chessboard.pieces)
+                // console.log(chessboard.pieces)
+                // console.log({ lastMovedPiece })
+
+                unHighlightAvailableMove(chessboard)
             })
         })
     })
@@ -298,7 +305,13 @@ export function findPiece(chessboard, x, y) {
     })[0]
 }
 
-export function removePiece(chessboard, x, y, piece) {
+export function findCell(chessboard, x, y) {
+    return chessboard.cells.filter((cell) => {
+        return cell.x == x && cell.y == y
+    })[0]
+}
+
+export function movePiece(chessboard, x, y, piece) {
     const targetPiece = findPiece(chessboard, x, y)
     if (targetPiece) {
         if (piece.color != targetPiece.color) {
@@ -315,18 +328,18 @@ export function removePiece(chessboard, x, y, piece) {
 
 export function findAvailableMove(piece, x, y) {
     switch (piece.type) {
-        case "king":
-            const kingCoordinates = [
-                [x - 1, y - 1], [x, y - 1], [x + 1, y - 1],
-                [x - 1, y], [x + 1, y],
-                [x - 1, y + 1], [x, y + 1], [x + 1, y + 1]
-            ]
+        // case "king":
+        //     const kingCoordinates = [
+        //         [x - 1, y - 1], [x, y - 1], [x + 1, y - 1],
+        //         [x - 1, y], [x + 1, y],
+        //         [x - 1, y + 1], [x, y + 1], [x + 1, y + 1]
+        //     ]
 
-            const kingAvailableCoordinates = kingCoordinates.filter((value) => {
-                return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
-            })
+        //     const kingAvailableCoordinates = kingCoordinates.filter((value) => {
+        //         return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+        //     })
 
-            return kingAvailableCoordinates
+        //     return kingAvailableCoordinates
 
         case "queen":
             const queenCoordinates = [
@@ -384,35 +397,35 @@ export function findAvailableMove(piece, x, y) {
             })
 
             return rookAvailableCoordinates
-        // case "pawn":
-        //     if (piece.color == "white") {
-        //         const whitePawnCoordinates = [[x, y + 1], [x - 1, y + 1], [x + 1, y + 1]]
-        //         if (y == 1) {
-        //             whitePawnCoordinates.push([x, y + 2])
-        //         }
+        case "pawn":
+            if (piece.color == "white") {
+                const whitePawnCoordinates = [[x, y + 1], [x - 1, y + 1], [x + 1, y + 1]]
+                if (y == 1) {
+                    whitePawnCoordinates.push([x, y + 2])
+                }
 
-        //         const whitePawnAvailableCoordinates = whitePawnCoordinates.filter((value) => {
-        //             return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
-        //         })
+                const whitePawnAvailableCoordinates = whitePawnCoordinates.filter((value) => {
+                    return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+                })
 
-        //         return whitePawnAvailableCoordinates
-        //     }
-        //     if (piece.color == "black") {
-        //         const blackPawnCoordinates = [[x, y - 1], [x - 1, y - 1], [x + 1, y - 1]]
-        //         if (y == 6) {
-        //             blackPawnCoordinates.push([x, y - 2])
-        //         }
+                return whitePawnAvailableCoordinates
+            }
+            if (piece.color == "black") {
+                const blackPawnCoordinates = [[x, y - 1], [x - 1, y - 1], [x + 1, y - 1]]
+                if (y == 6) {
+                    blackPawnCoordinates.push([x, y - 2])
+                }
 
-        //         const blackPawnAvailableCoordinates = blackPawnCoordinates.filter((value) => {
-        //             return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
-        //         })
+                const blackPawnAvailableCoordinates = blackPawnCoordinates.filter((value) => {
+                    return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+                })
 
-        //         return blackPawnAvailableCoordinates
-        //     }
+                return blackPawnAvailableCoordinates
+            }
     }
 }
 
-export function deleteBlockedMove(piece, chessboard, coordinates) {
+export function deleteBlockedMove(piece, chessboard, coordinates, lastMovedPiece) {
     // lastMovedPiece nhằm tìm nước tốt vừa mới đi để bắt tốt ngang đường
     let topLeftBlocked = false
     let topRightBlocked = false
@@ -778,66 +791,66 @@ export function deleteBlockedMove(piece, chessboard, coordinates) {
         return availableCoordinates
     }
 
-    if (piece.type == "king") {
-        coordinates.forEach(arr => {
-            if (Math.abs(piece.x - arr[0]) >= 2 || Math.abs(piece.y - arr[1]) >= 2) {
-                // qua trai
-                if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
-                    if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
-                        if (leftBlocked == false) {
-                            leftCastlingMoves.push(arr)
-                        }
-                    }
-                    else {
-                        leftBlocked = true
-                    }
-                }
+    // if (piece.type == "king") {
+    //     coordinates.forEach(arr => {
+    //         if (Math.abs(piece.x - arr[0]) >= 2 || Math.abs(piece.y - arr[1]) >= 2) {
+    //             // qua trai
+    //             if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
+    //                 if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+    //                     if (leftBlocked == false) {
+    //                         leftCastlingMoves.push(arr)
+    //                     }
+    //                 }
+    //                 else {
+    //                     leftBlocked = true
+    //                 }
+    //             }
 
-                //qua phai
-                if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
-                    if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
-                        if (rightBlocked == false) {
-                            if (Math.abs(piece.x - arr[0]) != 3) {
-                                rightCastlingMoves.push(arr)
-                            }
-                        }
-                    }
-                    else {
-                        rightBlocked = true
-                    }
-                }
-            } else {
-                if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
-                    //
-                    //qua trai
-                    if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
-                        leftBlocked = true
-                    }
+    //             //qua phai
+    //             if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
+    //                 if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+    //                     if (rightBlocked == false) {
+    //                         if (Math.abs(piece.x - arr[0]) != 3) {
+    //                             rightCastlingMoves.push(arr)
+    //                         }
+    //                     }
+    //                 }
+    //                 else {
+    //                     rightBlocked = true
+    //                 }
+    //             }
+    //         } else {
+    //             if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+    //                 //
+    //                 //qua trai
+    //                 if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
+    //                     leftBlocked = true
+    //                 }
 
-                    //qua phai
-                    if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
-                        rightBlocked = true
-                    }
-                    //
-                    if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
-                        availableCoordinates.push(arr)
-                    }
-                } else {
-                    availableCoordinates.push(arr)
-                }
-            }
-        })
+    //                 //qua phai
+    //                 if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
+    //                     rightBlocked = true
+    //                 }
+    //                 //
+    //                 if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+    //                     availableCoordinates.push(arr)
+    //                 }
+    //             } else {
+    //                 availableCoordinates.push(arr)
+    //             }
+    //         }
+    //     })
 
-        if (leftBlocked == false) {
-            availableCoordinates.push(...leftCastlingMoves)
-        }
+    //     if (leftBlocked == false) {
+    //         availableCoordinates.push(...leftCastlingMoves)
+    //     }
 
-        if (rightBlocked == false) {
-            availableCoordinates.push(...rightCastlingMoves)
-        }
+    //     if (rightBlocked == false) {
+    //         availableCoordinates.push(...rightCastlingMoves)
+    //     }
 
-        return availableCoordinates
-    }
+    //     return availableCoordinates
+    // }
 
     if (piece.type == "pawn") {
         if (piece.color == "white") {
@@ -872,7 +885,6 @@ export function deleteBlockedMove(piece, chessboard, coordinates) {
                                 }
                             }
                         }
-
                     }
                 }
             })
@@ -918,3 +930,16 @@ export function deleteBlockedMove(piece, chessboard, coordinates) {
     }
 }
 
+export function highlightAvailableMove(chessboard, coordinates) {
+    coordinates.forEach(coordinate => {
+        findCell(chessboard, coordinate[0], coordinate[1]).cellElement.classList.add("available")
+    })
+}
+
+export function unHighlightAvailableMove(chessboard) {
+    chessboard.cells.forEach(cell => {
+        if (cell.cellElement.classList.contains("available")) {
+            cell.cellElement.classList.remove("available")
+        }
+    })
+}
