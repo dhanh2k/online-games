@@ -92,7 +92,7 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
             //find available Move
             // console.log(findAvailableMove(piece, x, y))
             // console.log(deleteBlockedMove(piece, chessboard, findAvailableMove(piece, x, y)))
-            highlightAvailableMove(chessboard, deleteBlockedMove(piece, chessboard, findAvailableMove(piece, x, y), lastMovedPiece))
+            highlightAvailableMove(chessboard, deleteBlockedMove(piece, chessboard, findAvailableMove(chessboard, piece, x, y), lastMovedPiece))
 
             document.addEventListener("mousemove", document.fn = function fn(e) {
                 piece.pieceElement.style.setProperty("cursor", "grabbing")
@@ -163,6 +163,7 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
                 piece.pieceElement.style.setProperty("z-index", "0")
 
                 if (piece.x != x || piece.y != y) {
+                    piece.moved = true
                     lastMovedPiece = piece
                 }
 
@@ -173,6 +174,7 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
 
                 // console.log(chessboard.pieces)
                 // console.log({ lastMovedPiece })
+                console.log(piece)
 
                 unHighlightAvailableMove(chessboard)
             })
@@ -326,20 +328,54 @@ export function movePiece(chessboard, x, y, piece) {
     }
 }
 
-export function findAvailableMove(piece, x, y) {
+export function findAvailableMove(chessboard, piece, x, y) {
     switch (piece.type) {
-        // case "king":
-        //     const kingCoordinates = [
-        //         [x - 1, y - 1], [x, y - 1], [x + 1, y - 1],
-        //         [x - 1, y], [x + 1, y],
-        //         [x - 1, y + 1], [x, y + 1], [x + 1, y + 1]
-        //     ]
+        case "king":
+            const kingCoordinates = [
+                [x - 1, y - 1], [x, y - 1], [x + 1, y - 1],
+                [x - 1, y], [x + 1, y],
+                [x - 1, y + 1], [x, y + 1], [x + 1, y + 1]
+            ]
 
-        //     const kingAvailableCoordinates = kingCoordinates.filter((value) => {
-        //         return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
-        //     })
+            if (piece.moved == false) {
+                if (piece.color == "white") {
+                    // nước nhập thành bên trái
+                    if (findPiece(chessboard, 0, 0) != undefined) {
+                        if (findPiece(chessboard, 0, 0).moved == false) {
+                            kingCoordinates.push([x - 2, y])
+                        }
+                    }
 
-        //     return kingAvailableCoordinates
+                    // nước nhập thành bên phải
+                    if (findPiece(chessboard, 7, 0) != undefined) {
+                        if (findPiece(chessboard, 7, 0).moved == false) {
+                            kingCoordinates.push([x + 2, y], [x + 3, y])
+                        }
+                    }
+                }
+
+                if (piece.color == "black") {
+                    // nước nhập thành bên trái
+                    if (findPiece(chessboard, 0, 7) != undefined) {
+                        if (findPiece(chessboard, 0, 7).moved == false) {
+                            kingCoordinates.push([x - 2, y])
+                        }
+                    }
+
+                    // nước nhập thành bên phải
+                    if (findPiece(chessboard, 7, 7) != undefined) {
+                        if (findPiece(chessboard, 7, 7).moved == false) {
+                            kingCoordinates.push([x + 2, y], [x + 3, y])
+                        }
+                    }
+                }
+            }
+
+            const kingAvailableCoordinates = kingCoordinates.filter((value) => {
+                return value[0] >= 0 && value[1] >= 0 && value[0] <= 7 && value[1] <= 7
+            })
+
+            return kingAvailableCoordinates
 
         case "queen":
             const queenCoordinates = [
@@ -791,66 +827,66 @@ export function deleteBlockedMove(piece, chessboard, coordinates, lastMovedPiece
         return availableCoordinates
     }
 
-    // if (piece.type == "king") {
-    //     coordinates.forEach(arr => {
-    //         if (Math.abs(piece.x - arr[0]) >= 2 || Math.abs(piece.y - arr[1]) >= 2) {
-    //             // qua trai
-    //             if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
-    //                 if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
-    //                     if (leftBlocked == false) {
-    //                         leftCastlingMoves.push(arr)
-    //                     }
-    //                 }
-    //                 else {
-    //                     leftBlocked = true
-    //                 }
-    //             }
+    if (piece.type == "king") {
+        coordinates.forEach(arr => {
+            if (Math.abs(piece.x - arr[0]) >= 2 || Math.abs(piece.y - arr[1]) >= 2) {
+                // qua trai
+                if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
+                    if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                        if (leftBlocked == false) {
+                            leftCastlingMoves.push(arr)
+                        }
+                    }
+                    else {
+                        leftBlocked = true
+                    }
+                }
 
-    //             //qua phai
-    //             if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
-    //                 if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
-    //                     if (rightBlocked == false) {
-    //                         if (Math.abs(piece.x - arr[0]) != 3) {
-    //                             rightCastlingMoves.push(arr)
-    //                         }
-    //                     }
-    //                 }
-    //                 else {
-    //                     rightBlocked = true
-    //                 }
-    //             }
-    //         } else {
-    //             if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
-    //                 //
-    //                 //qua trai
-    //                 if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
-    //                     leftBlocked = true
-    //                 }
+                //qua phai
+                if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
+                    if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                        if (rightBlocked == false) {
+                            if (Math.abs(piece.x - arr[0]) != 3) {
+                                rightCastlingMoves.push(arr)
+                            }
+                        }
+                    }
+                    else {
+                        rightBlocked = true
+                    }
+                }
+            } else {
+                if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+                    //
+                    //qua trai
+                    if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
+                        leftBlocked = true
+                    }
 
-    //                 //qua phai
-    //                 if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
-    //                     rightBlocked = true
-    //                 }
-    //                 //
-    //                 if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
-    //                     availableCoordinates.push(arr)
-    //                 }
-    //             } else {
-    //                 availableCoordinates.push(arr)
-    //             }
-    //         }
-    //     })
+                    //qua phai
+                    if (piece.x - arr[0] < 0 && piece.y == arr[1]) {
+                        rightBlocked = true
+                    }
+                    //
+                    if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+                        availableCoordinates.push(arr)
+                    }
+                } else {
+                    availableCoordinates.push(arr)
+                }
+            }
+        })
 
-    //     if (leftBlocked == false) {
-    //         availableCoordinates.push(...leftCastlingMoves)
-    //     }
+        if (leftBlocked == false) {
+            availableCoordinates.push(...leftCastlingMoves)
+        }
 
-    //     if (rightBlocked == false) {
-    //         availableCoordinates.push(...rightCastlingMoves)
-    //     }
+        if (rightBlocked == false) {
+            availableCoordinates.push(...rightCastlingMoves)
+        }
 
-    //     return availableCoordinates
-    // }
+        return availableCoordinates
+    }
 
     if (piece.type == "pawn") {
         if (piece.color == "white") {
@@ -943,3 +979,70 @@ export function unHighlightAvailableMove(chessboard) {
         }
     })
 }
+
+export function compileCoordinates(coordinate) {
+    const arr = []
+    switch (coordinate[0]) {
+        case 0:
+            arr.push("a")
+            break
+        case 1:
+            arr.push("b")
+            break
+        case 2:
+            arr.push("c")
+            break
+        case 3:
+            arr.push("d")
+            break
+        case 4:
+            arr.push("e")
+            break
+        case 5:
+            arr.push("f")
+            break
+        case 6:
+            arr.push("g")
+            break
+        case 7:
+            arr.push("h")
+            break
+    }
+
+    switch (coordinate[1]) {
+        case 0:
+            arr.push("1")
+            break
+        case 1:
+            arr.push("2")
+            break
+        case 2:
+            arr.push("3")
+            break
+        case 3:
+            arr.push("4")
+            break
+        case 4:
+            arr.push("5")
+            break
+        case 5:
+            arr.push("6")
+            break
+        case 6:
+            arr.push("7")
+            break
+        case 7:
+            arr.push("8")
+            break
+    }
+}
+
+// num x - y
+// 0 = a = 1
+// 1 = b = 2
+// 2 = c = 3
+// 3 = d = 4
+// 4 = e = 5
+// 5 = f = 6
+// 6 = g = 7
+// 7 = h = 8
