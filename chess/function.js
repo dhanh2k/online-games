@@ -91,7 +91,10 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
 
             //find available Move
             // console.log(findAvailableMove(piece, x, y))
-            // console.log(deleteBlockedMove(piece, chessboard, findAvailableMove(piece, x, y)))
+            // console.log(deleteBlockedMove(piece, chessboard, findAvailableMove(chessboard, piece, x, y)))
+            // deleteBlockedMove(piece, chessboard, findAvailableMove(chessboard, piece, x, y)).forEach(arr => {
+            //     console.log(compileCoordinates(arr))
+            // })
             highlightAvailableMove(chessboard, deleteBlockedMove(piece, chessboard, findAvailableMove(chessboard, piece, x, y), lastMovedPiece))
 
             document.addEventListener("mousemove", document.fn = function fn(e) {
@@ -152,7 +155,7 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
                         }
                     }
                 }
-                console.log({ x, y })
+                // console.log({ x, y })
             })
 
             document.addEventListener("mouseup", document.fn1 = function fn1() {
@@ -174,7 +177,7 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
 
                 // console.log(chessboard.pieces)
                 // console.log({ lastMovedPiece })
-                console.log(piece)
+                // console.log(piece)
 
                 unHighlightAvailableMove(chessboard)
             })
@@ -314,17 +317,35 @@ export function findCell(chessboard, x, y) {
 }
 
 export function movePiece(chessboard, x, y, piece) {
+    const targetCell = findCell(chessboard, x, y)
     const targetPiece = findPiece(chessboard, x, y)
-    if (targetPiece) {
-        if (piece.color != targetPiece.color) {
+    if (targetCell.cellElement.classList.contains("available")) {
+        if (targetPiece) {
             targetPiece.pieceElement.remove()
             chessboard.pieces.splice(chessboard.pieces.indexOf(targetPiece), 1)
             piece.rePlacePiece(x, y)
+            renderMoveCode(piece, x, y, true)
         } else {
-            piece.rePlacePiece(piece.x, piece.y)
+            if (piece.type == "pawn") {
+                if (piece.x != x) {
+                    const targetPawn = findPiece(chessboard, x, piece.color == "white" ? y - 1 : y + 1)
+                    console.log(targetPawn)
+                    targetPawn.pieceElement.remove()
+                    chessboard.pieces.splice(chessboard.pieces.indexOf(targetPawn), 1)
+                    piece.rePlacePiece(x, y)
+                    renderMoveCode(piece, x, y, true)
+                } else {
+                    piece.rePlacePiece(x, y)
+                    renderMoveCode(piece, x, y, false)
+                }
+            } else {
+                piece.rePlacePiece(x, y)
+                renderMoveCode(piece, x, y, false)
+            }
+
         }
     } else {
-        piece.rePlacePiece(x, y)
+        piece.rePlacePiece(piece.x, piece.y)
     }
 }
 
@@ -984,28 +1005,28 @@ export function compileCoordinates(coordinate) {
     const arr = []
     switch (coordinate[0]) {
         case 0:
-            arr.push("a")
+            arr.push("h")
             break
         case 1:
-            arr.push("b")
-            break
-        case 2:
-            arr.push("c")
-            break
-        case 3:
-            arr.push("d")
-            break
-        case 4:
-            arr.push("e")
-            break
-        case 5:
-            arr.push("f")
-            break
-        case 6:
             arr.push("g")
             break
+        case 2:
+            arr.push("f")
+            break
+        case 3:
+            arr.push("e")
+            break
+        case 4:
+            arr.push("d")
+            break
+        case 5:
+            arr.push("c")
+            break
+        case 6:
+            arr.push("b")
+            break
         case 7:
-            arr.push("h")
+            arr.push("a")
             break
     }
 
@@ -1035,14 +1056,78 @@ export function compileCoordinates(coordinate) {
             arr.push("8")
             break
     }
+
+    return arr.join("")
 }
 
-// num x - y
-// 0 = a = 1
-// 1 = b = 2
-// 2 = c = 3
-// 3 = d = 4
-// 4 = e = 5
-// 5 = f = 6
-// 6 = g = 7
-// 7 = h = 8
+export function compileCoordinateX(x) {
+    switch (x) {
+        case 0:
+            return "h"
+        case 1:
+            return "g"
+        case 2:
+            return "f"
+        case 3:
+            return "e"
+        case 4:
+            return "d"
+        case 5:
+            return "c"
+        case 6:
+            return "b"
+        case 7:
+            return "a"
+    }
+}
+
+export function compileCoordinateY(y) {
+    switch (y) {
+        case 0:
+            return "1"
+        case 1:
+            return "2"
+        case 2:
+            return "3"
+        case 3:
+            return "4"
+        case 4:
+            return "5"
+        case 5:
+            return "6"
+        case 6:
+            return "7"
+        case 7:
+            return "8"
+    }
+}
+
+export function renderMoveCode(piece, x, y, capture) {
+    let moveCode = ""
+    switch (piece.type) {
+        case "king":
+            moveCode = moveCode.concat("", "k")
+            break
+        case "queen":
+            moveCode = moveCode.concat("", "q")
+            break
+        case "bishop":
+            moveCode = moveCode.concat("", "b")
+            break
+        case "knight":
+            moveCode = moveCode.concat("", "k")
+            break
+        case "rook":
+            moveCode = moveCode.concat("", "r")
+            break
+        // case "pawn":
+        //     moveCode = moveCode.concat("", "p")
+        //     break
+    }
+    // console.log(moveCode)
+    if (capture == true) {
+        moveCode = moveCode.concat("", "x")
+    }
+    console.log(moveCode.concat("", compileCoordinates([x, y])))
+
+}
