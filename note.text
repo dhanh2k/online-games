@@ -1,2 +1,4 @@
-- lập trình nước bắt tốt ngang đường và ghi lại lịch sử nước đi
-- lập trình nước nhập thành và ghi lại lịch sử nước đi
+- tạo hàm trả về tất cả các nước đi hợp lệ dạng kí tự
+- mỗi khi di chuyển một quân cờ sẽ chạy hàm này để so sánh với tất
+    cả những quân cùng loại xem có cùng đi vào nước đó không
+- nếu có thay đỗi kí tự cho hợp lệ

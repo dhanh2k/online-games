@@ -95,7 +95,8 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
             // deleteBlockedMove(piece, chessboard, findAvailableMove(chessboard, piece, x, y)).forEach(arr => {
             //     console.log(compileCoordinates(arr))
             // })
-            highlightAvailableMove(chessboard, deleteBlockedMove(piece, chessboard, findAvailableMove(chessboard, piece, x, y), lastMovedPiece))
+            findLegalMove(chessboard, piece, x, y, lastMovedPiece)
+            // highlightAvailableMove(chessboard, deleteBlockedMove(piece, chessboard, findAvailableMove(chessboard, piece, x, y), lastMovedPiece))
 
             document.addEventListener("mousemove", document.fn = function fn(e) {
                 piece.pieceElement.style.setProperty("cursor", "grabbing")
@@ -326,22 +327,83 @@ export function movePiece(chessboard, x, y, piece) {
             piece.rePlacePiece(x, y)
             renderMoveCode(piece, x, y, true)
         } else {
-            if (piece.type == "pawn") {
-                if (piece.x != x) {
-                    const targetPawn = findPiece(chessboard, x, piece.color == "white" ? y - 1 : y + 1)
-                    console.log(targetPawn)
-                    targetPawn.pieceElement.remove()
-                    chessboard.pieces.splice(chessboard.pieces.indexOf(targetPawn), 1)
-                    piece.rePlacePiece(x, y)
-                    renderMoveCode(piece, x, y, true)
-                } else {
+            switch (piece.type) {
+                case "pawn":
+                    if (piece.x != x) {
+                        const targetPawn = findPiece(chessboard, x, piece.color == "white" ? y - 1 : y + 1)
+                        console.log(targetPawn)
+                        targetPawn.pieceElement.remove()
+                        chessboard.pieces.splice(chessboard.pieces.indexOf(targetPawn), 1)
+                        piece.rePlacePiece(x, y)
+                        renderMoveCode(piece, x, y, true)
+                    } else {
+                        piece.rePlacePiece(x, y)
+                        renderMoveCode(piece, x, y, false)
+                    }
+                    break
+                case "king":
+                    let rook
+                    switch (piece.color) {
+                        case "white":
+                            if (x - piece.x == 2) {
+                                console.log("Castling QueenSide")
+                                rook = findPiece(chessboard, 7, 0)
+                                // console.log(rook)
+                                rook.rePlacePiece(4, 0)
+                                piece.rePlacePiece(x, y)
+                                renderMoveCode(piece, x, y, false, "queen")
+
+                            }
+                            if (x - piece.x == -2) {
+                                console.log("Castling KingSide")
+                                rook = findPiece(chessboard, 0, 0)
+                                rook.rePlacePiece(2, 0)
+                                // console.log(rook)
+                                piece.rePlacePiece(x, y)
+                                renderMoveCode(piece, x, y, false, "king")
+
+                            }
+                            break
+                        case "black":
+                            if (x - piece.x == 2) {
+                                console.log("Castling QueenSide")
+                                rook = findPiece(chessboard, 7, 7)
+                                // console.log(rook)
+                                rook.rePlacePiece(4, 7)
+                                piece.rePlacePiece(x, y)
+                                renderMoveCode(piece, x, y, false, "queen")
+                            }
+                            if (x - piece.x == -2) {
+                                console.log("Castling KingSide")
+                                rook = findPiece(chessboard, 0, 7)
+                                // console.log(rook)
+                                rook.rePlacePiece(2, 7)
+                                piece.rePlacePiece(x, y)
+                                renderMoveCode(piece, x, y, false, "king")
+                            }
+                            break
+                    }
+                    break
+                default:
                     piece.rePlacePiece(x, y)
                     renderMoveCode(piece, x, y, false)
-                }
-            } else {
-                piece.rePlacePiece(x, y)
-                renderMoveCode(piece, x, y, false)
             }
+            // if (piece.type == "pawn") {
+            //     if (piece.x != x) {
+            //         const targetPawn = findPiece(chessboard, x, piece.color == "white" ? y - 1 : y + 1)
+            //         console.log(targetPawn)
+            //         targetPawn.pieceElement.remove()
+            //         chessboard.pieces.splice(chessboard.pieces.indexOf(targetPawn), 1)
+            //         piece.rePlacePiece(x, y)
+            //         renderMoveCode(piece, x, y, true)
+            //     } else {
+            //         piece.rePlacePiece(x, y)
+            //         renderMoveCode(piece, x, y, false)
+            //     }
+            // } else {
+            //     piece.rePlacePiece(x, y)
+            //     renderMoveCode(piece, x, y, false)
+            // }
 
         }
     } else {
@@ -987,6 +1049,20 @@ export function deleteBlockedMove(piece, chessboard, coordinates, lastMovedPiece
     }
 }
 
+export function findLegalMove(chessboard, piece, x, y, lastMovedPiece){
+    const coordinates = deleteBlockedMove(piece, chessboard, findAvailableMove(chessboard, piece, x, y), lastMovedPiece)
+    highlightAvailableMove(chessboard, coordinates)
+    printLegalMove(coordinates)
+}
+
+export function printLegalMove(coordinates){
+    const arrayOfCoordinates = []
+    coordinates.forEach(coordinate => {
+        arrayOfCoordinates.push(compileCoordinateX(coordinate[0]) + compileCoordinateY(coordinate[1]))
+    })
+    console.log(arrayOfCoordinates)
+}
+
 export function highlightAvailableMove(chessboard, coordinates) {
     coordinates.forEach(coordinate => {
         findCell(chessboard, coordinate[0], coordinate[1]).cellElement.classList.add("available")
@@ -1102,32 +1178,40 @@ export function compileCoordinateY(y) {
     }
 }
 
-export function renderMoveCode(piece, x, y, capture) {
+export function renderMoveCode(piece, x, y, capture, castle = "none") {
     let moveCode = ""
-    switch (piece.type) {
-        case "king":
-            moveCode = moveCode.concat("", "k")
-            break
-        case "queen":
-            moveCode = moveCode.concat("", "q")
-            break
-        case "bishop":
-            moveCode = moveCode.concat("", "b")
-            break
-        case "knight":
-            moveCode = moveCode.concat("", "k")
-            break
-        case "rook":
-            moveCode = moveCode.concat("", "r")
-            break
-        // case "pawn":
-        //     moveCode = moveCode.concat("", "p")
-        //     break
-    }
-    // console.log(moveCode)
+
     if (capture == true) {
         moveCode = moveCode.concat("", "x")
     }
-    console.log(moveCode.concat("", compileCoordinates([x, y])))
-
+    switch (castle) {
+        case "none":
+            switch (piece.type) {
+                case "king":
+                    moveCode = moveCode.concat("", "k")
+                    break
+                case "queen":
+                    moveCode = moveCode.concat("", "q")
+                    break
+                case "bishop":
+                    moveCode = moveCode.concat("", "b")
+                    break
+                case "knight":
+                    moveCode = moveCode.concat("", "k")
+                    break
+                case "rook":
+                    moveCode = moveCode.concat("", "r")
+                    break
+            }
+            console.log(moveCode.concat("", compileCoordinates([x, y])))
+            break
+        case "king":
+            moveCode = moveCode.concat("", "0-0")
+            console.log(moveCode)
+            break
+        case "queen":
+            moveCode = moveCode.concat("", "0-0-0")
+            console.log(moveCode)
+            break
+    }
 }
