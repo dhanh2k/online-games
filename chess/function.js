@@ -1052,15 +1052,15 @@ export function deleteBlockedMove(piece, chessboard, coordinates, lastMovedPiece
 export function findLegalMove(chessboard, piece, x, y, lastMovedPiece){
     const coordinates = deleteBlockedMove(piece, chessboard, findAvailableMove(chessboard, piece, x, y), lastMovedPiece)
     highlightAvailableMove(chessboard, coordinates)
-    printLegalMove(coordinates)
+    console.log(listLegalMove(coordinates))
 }
 
-export function printLegalMove(coordinates){
+export function listLegalMove(coordinates){
     const arrayOfCoordinates = []
     coordinates.forEach(coordinate => {
         arrayOfCoordinates.push(compileCoordinateX(coordinate[0]) + compileCoordinateY(coordinate[1]))
     })
-    console.log(arrayOfCoordinates)
+    return arrayOfCoordinates
 }
 
 export function highlightAvailableMove(chessboard, coordinates) {
@@ -1214,4 +1214,14 @@ export function renderMoveCode(piece, x, y, capture, castle = "none") {
             console.log(moveCode)
             break
     }
+}
+
+export function checkForSameMoveCode(chessboard, piece){
+    // hàm này cần quân cờ cần kiểm tra (quân cờ sẽ đi vào ô cần ghi lịch sử)
+    // cần ô sẽ đặt quân cờ vào, tọa độ sẽ ở dạng mã code
+    // cần tất cả quân cờ để kiểm tra xem có quân nào thỏa mãn điều kiện không
+    // hàm này sẽ trả về true/false
+    return chessboard.pieces.filter(p => {
+        return p.type == piece.type && p.color == piece.color
+    })
 }
