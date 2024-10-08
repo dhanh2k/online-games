@@ -325,7 +325,7 @@ export function movePiece(chessboard, x, y, piece) {
             targetPiece.pieceElement.remove()
             chessboard.pieces.splice(chessboard.pieces.indexOf(targetPiece), 1)
             piece.rePlacePiece(x, y)
-            renderMoveCode(piece, x, y, true)
+            renderMoveCode(chessboard, piece, x, y, true)
         } else {
             switch (piece.type) {
                 case "pawn":
@@ -335,10 +335,10 @@ export function movePiece(chessboard, x, y, piece) {
                         targetPawn.pieceElement.remove()
                         chessboard.pieces.splice(chessboard.pieces.indexOf(targetPawn), 1)
                         piece.rePlacePiece(x, y)
-                        renderMoveCode(piece, x, y, true)
+                        renderMoveCode(chessboard, piece, x, y, true)
                     } else {
                         piece.rePlacePiece(x, y)
-                        renderMoveCode(piece, x, y, false)
+                        renderMoveCode(chessboard, piece, x, y, false)
                     }
                     break
                 case "king":
@@ -351,7 +351,7 @@ export function movePiece(chessboard, x, y, piece) {
                                 // console.log(rook)
                                 rook.rePlacePiece(4, 0)
                                 piece.rePlacePiece(x, y)
-                                renderMoveCode(piece, x, y, false, "queen")
+                                renderMoveCode(chessboard, piece, x, y, false, "queen")
 
                             }
                             if (x - piece.x == -2) {
@@ -360,7 +360,7 @@ export function movePiece(chessboard, x, y, piece) {
                                 rook.rePlacePiece(2, 0)
                                 // console.log(rook)
                                 piece.rePlacePiece(x, y)
-                                renderMoveCode(piece, x, y, false, "king")
+                                renderMoveCode(chessboard, piece, x, y, false, "king")
 
                             }
                             break
@@ -371,7 +371,7 @@ export function movePiece(chessboard, x, y, piece) {
                                 // console.log(rook)
                                 rook.rePlacePiece(4, 7)
                                 piece.rePlacePiece(x, y)
-                                renderMoveCode(piece, x, y, false, "queen")
+                                renderMoveCode(chessboard, piece, x, y, false, "queen")
                             }
                             if (x - piece.x == -2) {
                                 console.log("Castling KingSide")
@@ -379,14 +379,14 @@ export function movePiece(chessboard, x, y, piece) {
                                 // console.log(rook)
                                 rook.rePlacePiece(2, 7)
                                 piece.rePlacePiece(x, y)
-                                renderMoveCode(piece, x, y, false, "king")
+                                renderMoveCode(chessboard, piece, x, y, false, "king")
                             }
                             break
                     }
                     break
                 default:
                     piece.rePlacePiece(x, y)
-                    renderMoveCode(piece, x, y, false)
+                    renderMoveCode(chessboard, piece, x, y, false)
             }
             // if (piece.type == "pawn") {
             //     if (piece.x != x) {
@@ -1178,12 +1178,15 @@ export function compileCoordinateY(y) {
     }
 }
 
-export function renderMoveCode(piece, x, y, capture, castle = "none") {
+export function renderMoveCode(chessboard, piece, x, y, capture, castle = "none") {
+    console.log(checkForSameMoveCode(chessboard, piece))
     let moveCode = ""
 
     if (capture == true) {
         moveCode = moveCode.concat("", "x")
     }
+
+
     switch (castle) {
         case "none":
             switch (piece.type) {
@@ -1222,6 +1225,14 @@ export function checkForSameMoveCode(chessboard, piece){
     // cần tất cả quân cờ để kiểm tra xem có quân nào thỏa mãn điều kiện không
     // hàm này sẽ trả về true/false
     return chessboard.pieces.filter(p => {
-        return p.type == piece.type && p.color == piece.color
+        return (p.type == piece.type && p.color == piece.color) && (p.x != piece.x || p.y != piece.y)
+    }).forEach(pp => {
+        return findLegalMove(chessboard, pp, )
     })
 }
+
+export function checkThePieceForSameMoveCode(piece, targerPiece){
+
+}
+
+// đỗi lastmovePiece thành một trường trong đối tượng quân cờ
