@@ -1,4 +1,4 @@
-import { compileCoordinateX, compileCoordinateY, createCellElements, createPieceElements } from "./function.js"
+import { createCellElements, createPieceElements } from "./function.js"
 
 export default class ChessBoard {
     constructor(chessboardElement) {
@@ -24,6 +24,6 @@ class Cell {
             this.cellElement.classList.add("black")
         }
         // this.cellElement.innerHTML = this.x + "," + this.y
-        this.cellElement.innerHTML = compileCoordinateX(this.x) + compileCoordinateY(this.y)
+        // this.cellElement.innerHTML = compileCoordinateX(this.x) + compileCoordinateY(this.y)
     }
 }
