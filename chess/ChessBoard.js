@@ -23,7 +23,5 @@ class Cell {
         } else {
             this.cellElement.classList.add("black")
         }
-        // this.cellElement.innerHTML = this.x + "," + this.y
-        // this.cellElement.innerHTML = compileCoordinateX(this.x) + compileCoordinateY(this.y)
     }
 }

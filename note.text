@@ -1,4 +1,5 @@
-- tạo hàm trả về tất cả các nước đi hợp lệ dạng kí tự
-- mỗi khi di chuyển một quân cờ sẽ chạy hàm này để so sánh với tất
-    cả những quân cùng loại xem có cùng đi vào nước đó không
-- nếu có thay đỗi kí tự cho hợp lệ
+- chạy vua khi bị chiếu
+    - xây dựng hàm trả về mảng chứa tọa độ có thể di chuyển của quân chiếu
+    - quân vua bên bị chiếu sẽ không thể đi vào các ô có tọa độ trên
+- cản quân chiếu khi bị chiếu
+- ăn quân chiếu khi bị chiếu
