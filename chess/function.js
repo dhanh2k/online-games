@@ -382,7 +382,7 @@ export function movePiece(chessboard, x, y, piece) {
     highlightCheckMove(chessboard, piece)
 }
 
-export function findAvailableCoordinates(chessboard, piece) {
+export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
     const x = piece.x
     const y = piece.y
     let topLeftBlocked = false
@@ -895,9 +895,12 @@ export function findAvailableCoordinates(chessboard, piece) {
             return availableCoordinates
         case "pawn":
             if (piece.color == "white") {
-                const whitePawnCoordinates = [[x, y + 1], [x - 1, y + 1], [x + 1, y + 1]]
-                if (piece.y == 1) {
-                    whitePawnCoordinates.push([x, y + 2])
+                const whitePawnCoordinates = [[x - 1, y + 1], [x + 1, y + 1]]
+                if(findCheck == false){
+                    whitePawnCoordinates.push([x, y + 1])
+                    if (piece.y == 1) {
+                        whitePawnCoordinates.push([x, y + 2])
+                    }
                 }
 
                 const whitePawnAvailableCoordinates = whitePawnCoordinates.filter((value) => {
@@ -940,9 +943,12 @@ export function findAvailableCoordinates(chessboard, piece) {
                 })
             }
             if (piece.color == "black") {
-                const blackPawnCoordinates = [[x, y - 1], [x - 1, y - 1], [x + 1, y - 1]]
-                if (y == 6) {
-                    blackPawnCoordinates.push([x, y - 2])
+                const blackPawnCoordinates = [[x - 1, y - 1], [x + 1, y - 1]]
+                if(findCheck == false){
+                    blackPawnCoordinates.push([x, y - 1])
+                    if (y == 6) {
+                        blackPawnCoordinates.push([x, y - 2])
+                    }
                 }
 
                 const blackPawnAvailableCoordinates = blackPawnCoordinates.filter((value) => {
@@ -1024,8 +1030,10 @@ function unHighlightLastMoved(chessboard) {
 
 function highlightCheckMove(chessboard, piece) {
     findAvailableCoordinates(chessboard, piece).forEach(arr => {
-        if (findPiece(chessboard, arr[0], arr[1]) != undefined && findPiece(chessboard, arr[0], arr[1]).type == "king") {
+        const king = findPiece(chessboard, arr[0], arr[1])
+        if (king != undefined && king.type == "king") {
             findCell(chessboard, arr[0], arr[1]).cellElement.classList.add("checked")
+            findRestrictedCoordinates(chessboard, king)
         }
     })
 }
@@ -1036,4 +1044,17 @@ function setLastMovedPiece(chessboard, piece) {
     })
     piece.moved = true
     piece.lastMovedPiece = true
+}
+
+function findRestrictedCoordinates(chessboard, king){
+    const restrictedCoordinates = []
+    chessboard.pieces.forEach(piece => {
+        if(king.color != piece.color){
+            restrictedCoordinates.push(...findAvailableCoordinates(chessboard, piece))
+        }
+    })
+
+    restrictedCoordinates.forEach(coordinate => {
+        findCell(chessboard, coordinate[0], coordinate[1]).cellElement.classList.add("restricted")
+    })
 }

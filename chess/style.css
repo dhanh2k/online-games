@@ -53,6 +53,10 @@ body {
     pointer-events: none;
 }
 
+.restricted {
+    background-color: orange;
+}
+
 .checked {
     background-color: red;
 }
