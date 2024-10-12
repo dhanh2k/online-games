@@ -1,5 +1,7 @@
 import Piece from "./Piece.js"
 
+let checkedSide = undefined
+
 export function createCellElements(chessboardElement) {
     const cells = []
     for (let i = 0; i < 64; i++) {
@@ -88,7 +90,7 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
             x = piece.x
             y = piece.y
 
-            findLegalMove(chessboard, piece, x, y)
+            findLegalMove(chessboard, piece)
 
             document.addEventListener("mousemove", document.fn = function fn(e) {
                 piece.pieceElement.style.setProperty("cursor", "grabbing")
@@ -310,7 +312,7 @@ export function movePiece(chessboard, x, y, piece) {
             targetPiece.pieceElement.remove()
             chessboard.pieces.splice(chessboard.pieces.indexOf(targetPiece), 1)
             piece.rePlacePiece(x, y)
-            if(piece.type == "pawn"){
+            if (piece.type == "pawn") {
                 if (y == 0 || y == 7) {
                     piece.pieceElement.removeChild(piece.pieceElement.firstElementChild)
                     piece.type = "queen"
@@ -379,7 +381,7 @@ export function movePiece(chessboard, x, y, piece) {
     } else {
         piece.rePlacePiece(piece.x, piece.y)
     }
-    highlightCheckMove(chessboard, piece)
+    isACheck(chessboard, piece)
 }
 
 export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
@@ -405,35 +407,37 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 [x - 1, y + 1], [x, y + 1], [x + 1, y + 1]
             ]
 
-            if (piece.moved == false) {
-                if (piece.color == "white") {
-                    // nước nhập thành bên trái
-                    if (findPiece(chessboard, 0, 0) != undefined) {
-                        if (findPiece(chessboard, 0, 0).moved == false) {
-                            kingCoordinates.push([x - 2, y])
+            if(findCheck == false){
+                if (piece.moved == false) {
+                    if (piece.color == "white") {
+                        // nước nhập thành bên trái
+                        if (findPiece(chessboard, 0, 0) != undefined) {
+                            if (findPiece(chessboard, 0, 0).moved == false) {
+                                kingCoordinates.push([x - 2, y])
+                            }
+                        }
+    
+                        // nước nhập thành bên phải
+                        if (findPiece(chessboard, 7, 0) != undefined) {
+                            if (findPiece(chessboard, 7, 0).moved == false) {
+                                kingCoordinates.push([x + 2, y], [x + 3, y])
+                            }
                         }
                     }
-
-                    // nước nhập thành bên phải
-                    if (findPiece(chessboard, 7, 0) != undefined) {
-                        if (findPiece(chessboard, 7, 0).moved == false) {
-                            kingCoordinates.push([x + 2, y], [x + 3, y])
+    
+                    if (piece.color == "black") {
+                        // nước nhập thành bên trái
+                        if (findPiece(chessboard, 0, 7) != undefined) {
+                            if (findPiece(chessboard, 0, 7).moved == false) {
+                                kingCoordinates.push([x - 2, y])
+                            }
                         }
-                    }
-                }
-
-                if (piece.color == "black") {
-                    // nước nhập thành bên trái
-                    if (findPiece(chessboard, 0, 7) != undefined) {
-                        if (findPiece(chessboard, 0, 7).moved == false) {
-                            kingCoordinates.push([x - 2, y])
-                        }
-                    }
-
-                    // nước nhập thành bên phải
-                    if (findPiece(chessboard, 7, 7) != undefined) {
-                        if (findPiece(chessboard, 7, 7).moved == false) {
-                            kingCoordinates.push([x + 2, y], [x + 3, y])
+    
+                        // nước nhập thành bên phải
+                        if (findPiece(chessboard, 7, 7) != undefined) {
+                            if (findPiece(chessboard, 7, 7).moved == false) {
+                                kingCoordinates.push([x + 2, y], [x + 3, y])
+                            }
                         }
                     }
                 }
@@ -444,50 +448,54 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
             })
 
             kingAvailableCoordinates.forEach(arr => {
-                if (Math.abs(x - arr[0]) >= 2 || Math.abs(y - arr[1]) >= 2) {
-                    // qua trai
-                    if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
-                        if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
-                            if (leftBlocked == false) {
-                                leftCastlingMoves.push(arr)
-                            }
-                        }
-                        else {
-                            leftBlocked = true
-                        }
-                    }
-
-                    //qua phai
-                    if (x - arr[0] < 0 && y == arr[1]) {
-                        if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
-                            if (rightBlocked == false) {
-                                if (Math.abs(piece.x - arr[0]) != 3) {
-                                    rightCastlingMoves.push(arr)
+                if(findCheck == true){
+                    availableCoordinates.push(arr)
+                }else{
+                    if (Math.abs(x - arr[0]) >= 2 || Math.abs(y - arr[1]) >= 2) {
+                        // qua trai
+                        if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
+                            if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                                if (leftBlocked == false) {
+                                    leftCastlingMoves.push(arr)
                                 }
                             }
+                            else {
+                                leftBlocked = true
+                            }
                         }
-                        else {
-                            rightBlocked = true
-                        }
-                    }
-                } else {
-                    if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
-                        //
-                        //qua trai
-                        if (x - arr[0] > 0 && y == arr[1]) {
-                            leftBlocked = true
-                        }
-
+    
                         //qua phai
                         if (x - arr[0] < 0 && y == arr[1]) {
-                            rightBlocked = true
-                        }
-                        //
-                        if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
-                            availableCoordinates.push(arr)
+                            if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
+                                if (rightBlocked == false) {
+                                    if (Math.abs(piece.x - arr[0]) != 3) {
+                                        rightCastlingMoves.push(arr)
+                                    }
+                                }
+                            }
+                            else {
+                                rightBlocked = true
+                            }
                         }
                     } else {
-                        availableCoordinates.push(arr)
+                        if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+                            //
+                            //qua trai
+                            if (x - arr[0] > 0 && y == arr[1]) {
+                                leftBlocked = true
+                            }
+    
+                            //qua phai
+                            if (x - arr[0] < 0 && y == arr[1]) {
+                                rightBlocked = true
+                            }
+                            //
+                            if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+                                availableCoordinates.push(arr)
+                            }
+                        } else {
+                            availableCoordinates.push(arr)
+                        }
                     }
                 }
             })
@@ -528,14 +536,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
 
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            topLeftBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (topLeftBlocked == false) {
                                 availableCoordinates.push(arr)
                                 topLeftBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                topLeftBlocked = true
+                            } else {
+                                if (topLeftBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    topLeftBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -549,14 +565,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
 
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            topRightBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (topRightBlocked == false) {
                                 availableCoordinates.push(arr)
                                 topRightBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                topRightBlocked = true
+                            } else {
+                                if (topRightBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    topRightBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -570,14 +594,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
 
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            botLeftBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (botLeftBlocked == false) {
                                 availableCoordinates.push(arr)
                                 botLeftBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                botLeftBlocked = true
+                            } else {
+                                if (botLeftBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    botLeftBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -591,14 +623,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
 
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            botRightBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (botRightBlocked == false) {
                                 availableCoordinates.push(arr)
                                 botRightBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                botRightBlocked = true
+                            } else {
+                                if (botRightBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    botRightBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -610,14 +650,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                         }
                     }
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            topBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (topBlocked == false) {
                                 availableCoordinates.push(arr)
                                 topBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                topBlocked = true
+                            } else {
+                                if (topBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    topBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -629,14 +677,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                         }
                     }
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            botBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (botBlocked == false) {
                                 availableCoordinates.push(arr)
                                 botBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                botBlocked = true
+                            } else {
+                                if (botBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    botBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -648,14 +704,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                         }
                     }
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            leftBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (leftBlocked == false) {
                                 availableCoordinates.push(arr)
                                 leftBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                leftBlocked = true
+                            } else {
+                                if (leftBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    leftBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -667,14 +731,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                         }
                     }
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            rightBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (rightBlocked == false) {
                                 availableCoordinates.push(arr)
                                 rightBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                rightBlocked = true
+                            } else {
+                                if (rightBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    rightBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
             })
@@ -703,14 +775,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
 
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            topLeftBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (topLeftBlocked == false) {
                                 availableCoordinates.push(arr)
                                 topLeftBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                topLeftBlocked = true
+                            } else {
+                                if (topLeftBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    topLeftBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -724,14 +804,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
 
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            topRightBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (topRightBlocked == false) {
                                 availableCoordinates.push(arr)
                                 topRightBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                topRightBlocked = true
+                            } else {
+                                if (topRightBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    topRightBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -745,14 +833,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
 
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            botLeftBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (botLeftBlocked == false) {
                                 availableCoordinates.push(arr)
                                 botLeftBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                botLeftBlocked = true
+                            } else {
+                                if (botLeftBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    botLeftBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -766,14 +862,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
 
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            botRightBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (botRightBlocked == false) {
                                 availableCoordinates.push(arr)
                                 botRightBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                botRightBlocked = true
+                            } else {
+                                if (botRightBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    botRightBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
             })
@@ -792,13 +896,19 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
             })
 
             KnightAvailableCoordinates.forEach(arr => {
-                if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
-                    if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+                if(findCheck == true){
+                    availableCoordinates.push(arr)
+
+                }else{
+                    if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+                        if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+                            availableCoordinates.push(arr)
+                        }
+                    } else {
                         availableCoordinates.push(arr)
                     }
-                } else {
-                    availableCoordinates.push(arr)
                 }
+                
             })
 
             return availableCoordinates
@@ -823,12 +933,19 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                         }
                     }
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            topBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (topBlocked == false) {
                                 availableCoordinates.push(arr)
                                 topBlocked = true
+                            }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                topBlocked = true
+                            } else {
+                                if (topBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    topBlocked = true
+                                }
                             }
                         }
                     }
@@ -842,14 +959,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                         }
                     }
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            botBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (botBlocked == false) {
                                 availableCoordinates.push(arr)
                                 botBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                botBlocked = true
+                            } else {
+                                if (botBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    botBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -861,14 +986,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                         }
                     }
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            leftBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (leftBlocked == false) {
                                 availableCoordinates.push(arr)
                                 leftBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                leftBlocked = true
+                            } else {
+                                if (leftBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    leftBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
 
@@ -880,14 +1013,22 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                         }
                     }
                     else {
-                        if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
-                            rightBlocked = true
-                        } else {
+                        if (findCheck == true) {
                             if (rightBlocked == false) {
                                 availableCoordinates.push(arr)
                                 rightBlocked = true
                             }
+                        } else {
+                            if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
+                                rightBlocked = true
+                            } else {
+                                if (rightBlocked == false) {
+                                    availableCoordinates.push(arr)
+                                    rightBlocked = true
+                                }
+                            }
                         }
+
                     }
                 }
             })
@@ -896,9 +1037,9 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
         case "pawn":
             if (piece.color == "white") {
                 const whitePawnCoordinates = [[x - 1, y + 1], [x + 1, y + 1]]
-                if(findCheck == false){
+                if (findCheck == false) {
                     whitePawnCoordinates.push([x, y + 1])
-                    if (piece.y == 1) {
+                    if (y == 1) {
                         whitePawnCoordinates.push([x, y + 2])
                     }
                 }
@@ -920,21 +1061,25 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
                     // các nước đi chéo
                     else {
-                        if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
-                            if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
-                                availableCoordinates.push(arr)
+                        if (findCheck == true) {
+                            availableCoordinates.push(arr)
+                        } else {
+                            if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+                                if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+                                    availableCoordinates.push(arr)
+                                }
                             }
-                        }
-                        // bat tot ngang duong
-                        else {
-                            if (piece.y == 4) {
-                                if (findPiece(chessboard, arr[0], arr[1] - 1) != undefined) {
-                                    console.log(findPiece(chessboard, arr[0], arr[1] - 1))
+                            // bat tot ngang duong
+                            else {
+                                if (piece.y == 4) {
+                                    if (findPiece(chessboard, arr[0], arr[1] - 1) != undefined) {
+                                        console.log(findPiece(chessboard, arr[0], arr[1] - 1))
 
-                                    if (findPiece(chessboard, arr[0], arr[1] - 1).type == "pawn" &&
-                                        findPiece(chessboard, arr[0], arr[1] - 1).color == "black" &&
-                                        findPiece(chessboard, arr[0], arr[1] - 1).lastMovedPiece == true) {
-                                        availableCoordinates.push(arr)
+                                        if (findPiece(chessboard, arr[0], arr[1] - 1).type == "pawn" &&
+                                            findPiece(chessboard, arr[0], arr[1] - 1).color == "black" &&
+                                            findPiece(chessboard, arr[0], arr[1] - 1).lastMovedPiece == true) {
+                                            availableCoordinates.push(arr)
+                                        }
                                     }
                                 }
                             }
@@ -944,7 +1089,7 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
             }
             if (piece.color == "black") {
                 const blackPawnCoordinates = [[x - 1, y - 1], [x + 1, y - 1]]
-                if(findCheck == false){
+                if (findCheck == false) {
                     blackPawnCoordinates.push([x, y - 1])
                     if (y == 6) {
                         blackPawnCoordinates.push([x, y - 2])
@@ -968,20 +1113,25 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
                     // các nước đi chéo
                     else {
-                        if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
-                            if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
-                                availableCoordinates.push(arr)
+                        if (findCheck == true) {
+                            availableCoordinates.push(arr)
+                        } else {
+                            if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+                                if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
+                                    availableCoordinates.push(arr)
+                                }
+
                             }
-                        }
-                        // bat tot ngang duong
-                        else {
-                            if (piece.y == 3) {
-                                if (findPiece(chessboard, arr[0], arr[1] + 1) != undefined) {
-                                    console.log(findPiece(chessboard, arr[0], arr[1] + 1))
-                                    if (findPiece(chessboard, arr[0], arr[1] + 1).type == "pawn" &&
-                                        findPiece(chessboard, arr[0], arr[1] + 1).color == "white" &&
-                                        findPiece(chessboard, arr[0], arr[1] + 1).lastMovedPiece == true) {
-                                        availableCoordinates.push(arr)
+                            // bat tot ngang duong
+                            else {
+                                if (piece.y == 3) {
+                                    if (findPiece(chessboard, arr[0], arr[1] + 1) != undefined) {
+                                        console.log(findPiece(chessboard, arr[0], arr[1] + 1))
+                                        if (findPiece(chessboard, arr[0], arr[1] + 1).type == "pawn" &&
+                                            findPiece(chessboard, arr[0], arr[1] + 1).color == "white" &&
+                                            findPiece(chessboard, arr[0], arr[1] + 1).lastMovedPiece == true) {
+                                            availableCoordinates.push(arr)
+                                        }
                                     }
                                 }
                             }
@@ -993,8 +1143,8 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
     }
 }
 
-export function findLegalMove(chessboard, piece, x, y) {
-    const coordinates = findAvailableCoordinates(chessboard, piece, x, y)
+export function findLegalMove(chessboard, piece) {
+    const coordinates = findAvailableCoordinates(chessboard, piece)
     highlightAvailableMove(chessboard, coordinates)
 }
 
@@ -1028,14 +1178,21 @@ function unHighlightLastMoved(chessboard) {
     })
 }
 
-function highlightCheckMove(chessboard, piece) {
+function isACheck(chessboard, piece){
     findAvailableCoordinates(chessboard, piece).forEach(arr => {
         const king = findPiece(chessboard, arr[0], arr[1])
         if (king != undefined && king.type == "king") {
-            findCell(chessboard, arr[0], arr[1]).cellElement.classList.add("checked")
+            king.checked = true
+            checkedSide = king.color
+            console.log(checkedSide)
+            highlightCheckedKingCell(chessboard, arr)
             findRestrictedCoordinates(chessboard, king)
         }
     })
+}
+
+function highlightCheckedKingCell(chessboard, arr) {
+    findCell(chessboard, arr[0], arr[1]).cellElement.classList.add("checked")
 }
 
 function setLastMovedPiece(chessboard, piece) {
@@ -1046,15 +1203,18 @@ function setLastMovedPiece(chessboard, piece) {
     piece.lastMovedPiece = true
 }
 
-function findRestrictedCoordinates(chessboard, king){
+function findRestrictedCoordinates(chessboard, king) {
     const restrictedCoordinates = []
     chessboard.pieces.forEach(piece => {
-        if(king.color != piece.color){
-            restrictedCoordinates.push(...findAvailableCoordinates(chessboard, piece))
+        if (king.color != piece.color) {
+            restrictedCoordinates.push(...findAvailableCoordinates(chessboard, piece, true))
         }
     })
 
+    console.log(restrictedCoordinates)
+
     restrictedCoordinates.forEach(coordinate => {
+        
         findCell(chessboard, coordinate[0], coordinate[1]).cellElement.classList.add("restricted")
     })
 }

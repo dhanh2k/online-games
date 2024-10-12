@@ -1,4 +1,7 @@
 - chạy vua khi bị chiếu
+        - khi quân vua bị chiếu sẽ thay đỗi thuộc tính checked thành /true
+        - xây dựng hàm kiểm tra xem trạng thái của quân vua có đang bị
+            chiếu hay không, nếu có thay đỗi màu của ô chứa quân vua
     - xây dựng hàm trả về mảng chứa tọa độ có thể di chuyển của quân chiếu
     - quân vua bên bị chiếu sẽ không thể đi vào các ô có tọa độ trên
 - cản quân chiếu khi bị chiếu

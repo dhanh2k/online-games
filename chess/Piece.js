@@ -25,6 +25,7 @@ export default class Piece {
         this.color = color
         this.moved = false
         this.lastMoved = false
+        this.checked = false
     }
 
     set setX(value) {
