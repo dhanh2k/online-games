@@ -15,6 +15,47 @@ export function createCellElements(chessboardElement) {
 export function createPieceElements(chessboardElement, reverse) {
     const pieces = []
 
+    // pieces.push(new Piece(3, 0, "king", "white", reverse))
+    // pieces.push(new Piece(3, 7, "king", "black", reverse))
+
+    // pieces.push(new Piece(4, 0, "queen", "white", reverse))
+    // pieces.push(new Piece(4, 7, "queen", "black", reverse))
+
+    // pieces.push(new Piece(2, 0, "bishop", "white", reverse))
+    // pieces.push(new Piece(5, 0, "bishop", "white", reverse))
+    // pieces.push(new Piece(2, 7, "bishop", "black", reverse))
+    // pieces.push(new Piece(5, 7, "bishop", "black", reverse))
+
+    // pieces.push(new Piece(1, 0, "knight", "white", reverse))
+    // pieces.push(new Piece(6, 0, "knight", "white", reverse))
+    // pieces.push(new Piece(1, 7, "knight", "black", reverse))
+    // pieces.push(new Piece(6, 7, "knight", "black", reverse))
+
+    // pieces.push(new Piece(0, 0, "rook", "white", reverse))
+    // pieces.push(new Piece(7, 0, "rook", "white", reverse))
+    // pieces.push(new Piece(0, 7, "rook", "black", reverse))
+    // pieces.push(new Piece(7, 7, "rook", "black", reverse))
+
+    // pieces.push(new Piece(0, 1, "pawn", "white", reverse))
+    // pieces.push(new Piece(1, 1, "pawn", "white", reverse))
+    // pieces.push(new Piece(2, 1, "pawn", "white", reverse))
+    // pieces.push(new Piece(3, 1, "pawn", "white", reverse))
+    // pieces.push(new Piece(4, 1, "pawn", "white", reverse))
+    // pieces.push(new Piece(5, 1, "pawn", "white", reverse))
+    // pieces.push(new Piece(6, 1, "pawn", "white", reverse))
+    // pieces.push(new Piece(7, 1, "pawn", "white", reverse))
+    // pieces.push(new Piece(0, 6, "pawn", "black", reverse))
+    // pieces.push(new Piece(1, 6, "pawn", "black", reverse))
+    // pieces.push(new Piece(2, 6, "pawn", "black", reverse))
+    // pieces.push(new Piece(3, 6, "pawn", "black", reverse))
+    // pieces.push(new Piece(4, 6, "pawn", "black", reverse))
+    // pieces.push(new Piece(5, 6, "pawn", "black", reverse))
+    // pieces.push(new Piece(6, 6, "pawn", "black", reverse))
+    // pieces.push(new Piece(7, 6, "pawn", "black", reverse))
+
+    // //for testing
+    // pieces.push(new Piece(3, 5, "king", "black", reverse))
+    // pieces.push(new Piece(4, 3, "king", "white", reverse))
     pieces.push(new Piece(3, 0, "king", "white", reverse))
     pieces.push(new Piece(3, 7, "king", "black", reverse))
 
@@ -26,36 +67,10 @@ export function createPieceElements(chessboardElement, reverse) {
     pieces.push(new Piece(2, 7, "bishop", "black", reverse))
     pieces.push(new Piece(5, 7, "bishop", "black", reverse))
 
-    pieces.push(new Piece(1, 0, "knight", "white", reverse))
-    pieces.push(new Piece(6, 0, "knight", "white", reverse))
-    pieces.push(new Piece(1, 7, "knight", "black", reverse))
-    pieces.push(new Piece(6, 7, "knight", "black", reverse))
-
-    pieces.push(new Piece(0, 0, "rook", "white", reverse))
-    pieces.push(new Piece(7, 0, "rook", "white", reverse))
-    pieces.push(new Piece(0, 7, "rook", "black", reverse))
-    pieces.push(new Piece(7, 7, "rook", "black", reverse))
-
-    pieces.push(new Piece(0, 1, "pawn", "white", reverse))
-    pieces.push(new Piece(1, 1, "pawn", "white", reverse))
-    pieces.push(new Piece(2, 1, "pawn", "white", reverse))
-    pieces.push(new Piece(3, 1, "pawn", "white", reverse))
-    pieces.push(new Piece(4, 1, "pawn", "white", reverse))
-    pieces.push(new Piece(5, 1, "pawn", "white", reverse))
-    pieces.push(new Piece(6, 1, "pawn", "white", reverse))
-    pieces.push(new Piece(7, 1, "pawn", "white", reverse))
-    pieces.push(new Piece(0, 6, "pawn", "black", reverse))
-    pieces.push(new Piece(1, 6, "pawn", "black", reverse))
-    pieces.push(new Piece(2, 6, "pawn", "black", reverse))
-    pieces.push(new Piece(3, 6, "pawn", "black", reverse))
-    pieces.push(new Piece(4, 6, "pawn", "black", reverse))
-    pieces.push(new Piece(5, 6, "pawn", "black", reverse))
-    pieces.push(new Piece(6, 6, "pawn", "black", reverse))
-    pieces.push(new Piece(7, 6, "pawn", "black", reverse))
-
-    // //for testing
-    // pieces.push(new Piece(3, 5, "king", "black", reverse))
-    // pieces.push(new Piece(4, 3, "king", "white", reverse))
+    // pieces.push(new Piece(0, 0, "rook", "white", reverse))
+    // pieces.push(new Piece(7, 0, "rook", "white", reverse))
+    // pieces.push(new Piece(0, 7, "rook", "black", reverse))
+    // pieces.push(new Piece(7, 7, "rook", "black", reverse))
 
     pieces.forEach(piece => {
         chessboardElement.appendChild(piece.pieceElement)
@@ -168,6 +183,8 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
                 unHighlightLastMoved(chessboard)
                 unHighlightAvailableMove(chessboard)
                 highlightLastMovedPiece(chessboard)
+
+                console.log(checkedSide)
             })
         })
     })
@@ -384,6 +401,12 @@ export function movePiece(chessboard, x, y, piece) {
     isACheck(chessboard, piece)
 }
 
+function findKingByColorPiece(chessboard, p) {
+    return chessboard.pieces.filter(piece => {
+        return piece.color == p.color && piece.type == "king"
+    })[0]
+}
+
 export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
     const x = piece.x
     const y = piece.y
@@ -407,7 +430,7 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 [x - 1, y + 1], [x, y + 1], [x + 1, y + 1]
             ]
 
-            if(findCheck == false){
+            if (findCheck == false) {
                 if (piece.moved == false) {
                     if (piece.color == "white") {
                         // nước nhập thành bên trái
@@ -416,7 +439,7 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                                 kingCoordinates.push([x - 2, y])
                             }
                         }
-    
+
                         // nước nhập thành bên phải
                         if (findPiece(chessboard, 7, 0) != undefined) {
                             if (findPiece(chessboard, 7, 0).moved == false) {
@@ -424,7 +447,7 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                             }
                         }
                     }
-    
+
                     if (piece.color == "black") {
                         // nước nhập thành bên trái
                         if (findPiece(chessboard, 0, 7) != undefined) {
@@ -432,7 +455,7 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                                 kingCoordinates.push([x - 2, y])
                             }
                         }
-    
+
                         // nước nhập thành bên phải
                         if (findPiece(chessboard, 7, 7) != undefined) {
                             if (findPiece(chessboard, 7, 7).moved == false) {
@@ -448,9 +471,9 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
             })
 
             kingAvailableCoordinates.forEach(arr => {
-                if(findCheck == true){
+                if (findCheck == true) {
                     availableCoordinates.push(arr)
-                }else{
+                } else {
                     if (Math.abs(x - arr[0]) >= 2 || Math.abs(y - arr[1]) >= 2) {
                         // qua trai
                         if (piece.x - arr[0] > 0 && piece.y == arr[1]) {
@@ -463,7 +486,7 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                                 leftBlocked = true
                             }
                         }
-    
+
                         //qua phai
                         if (x - arr[0] < 0 && y == arr[1]) {
                             if (findPiece(chessboard, arr[0], arr[1]) == undefined) {
@@ -484,7 +507,7 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                             if (x - arr[0] > 0 && y == arr[1]) {
                                 leftBlocked = true
                             }
-    
+
                             //qua phai
                             if (x - arr[0] < 0 && y == arr[1]) {
                                 rightBlocked = true
@@ -507,6 +530,23 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
             if (rightBlocked == false) {
                 availableCoordinates.push(...rightCastlingMoves)
             }
+
+            //xử lý khi quân vua đang bị chiếu
+            if (checkedSide != undefined) {
+                if (checkedSide.color == piece.color) {
+                    console.log("Xu ly o day")
+                    const test = availableCoordinates.filter(arr => {
+                        return findRestrictedCoordinates(chessboard, checkedSide).some(arra => {
+                            return arr[0] == arra[0] && arr[1] == arra[1]
+                        }) == false
+                    })
+                    availableCoordinates.length = 0
+                    availableCoordinates.push(...test)
+                    console.log(availableCoordinates)
+                }
+            }
+            //hết
+
 
             return availableCoordinates
         case "queen":
@@ -538,8 +578,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (topLeftBlocked == false) {
-                                availableCoordinates.push(arr)
-                                topLeftBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    topLeftBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -567,8 +611,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (topRightBlocked == false) {
-                                availableCoordinates.push(arr)
-                                topRightBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    topRightBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -596,8 +644,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (botLeftBlocked == false) {
-                                availableCoordinates.push(arr)
-                                botLeftBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    botLeftBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -625,8 +677,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (botRightBlocked == false) {
-                                availableCoordinates.push(arr)
-                                botRightBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    botRightBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -652,8 +708,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (topBlocked == false) {
-                                availableCoordinates.push(arr)
-                                topBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    topBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -679,8 +739,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (botBlocked == false) {
-                                availableCoordinates.push(arr)
-                                botBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    botBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -706,8 +770,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (leftBlocked == false) {
-                                availableCoordinates.push(arr)
-                                leftBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    leftBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -733,8 +801,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (rightBlocked == false) {
-                                availableCoordinates.push(arr)
-                                rightBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    rightBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -777,8 +849,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (topLeftBlocked == false) {
-                                availableCoordinates.push(arr)
-                                topLeftBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    topLeftBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -806,8 +882,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (topRightBlocked == false) {
-                                availableCoordinates.push(arr)
-                                topRightBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    topRightBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -835,8 +915,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (botLeftBlocked == false) {
-                                availableCoordinates.push(arr)
-                                botLeftBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    botLeftBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -864,8 +948,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (botRightBlocked == false) {
-                                availableCoordinates.push(arr)
-                                botRightBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    botRightBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -896,10 +984,10 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
             })
 
             KnightAvailableCoordinates.forEach(arr => {
-                if(findCheck == true){
+                if (findCheck == true) {
                     availableCoordinates.push(arr)
 
-                }else{
+                } else {
                     if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
                         if (piece.color != findPiece(chessboard, arr[0], arr[1]).color) {
                             availableCoordinates.push(arr)
@@ -908,7 +996,7 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                         availableCoordinates.push(arr)
                     }
                 }
-                
+
             })
 
             return availableCoordinates
@@ -935,8 +1023,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (topBlocked == false) {
-                                availableCoordinates.push(arr)
-                                topBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    topBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -961,8 +1053,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (botBlocked == false) {
-                                availableCoordinates.push(arr)
-                                botBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    botBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -988,8 +1084,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (leftBlocked == false) {
-                                availableCoordinates.push(arr)
-                                leftBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    leftBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -1015,8 +1115,12 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     else {
                         if (findCheck == true) {
                             if (rightBlocked == false) {
-                                availableCoordinates.push(arr)
-                                rightBlocked = true
+                                if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                                    availableCoordinates.push(arr)
+                                } else {
+                                    availableCoordinates.push(arr)
+                                    rightBlocked = true
+                                }
                             }
                         } else {
                             if (piece.color == findPiece(chessboard, arr[0], arr[1]).color) {
@@ -1178,21 +1282,29 @@ function unHighlightLastMoved(chessboard) {
     })
 }
 
-function isACheck(chessboard, piece){
-    findAvailableCoordinates(chessboard, piece).forEach(arr => {
-        const king = findPiece(chessboard, arr[0], arr[1])
-        if (king != undefined && king.type == "king") {
-            king.checked = true
-            checkedSide = king.color
-            console.log(checkedSide)
-            highlightCheckedKingCell(chessboard, arr)
-            findRestrictedCoordinates(chessboard, king)
+function isACheck(chessboard, p) {
+    chessboard.pieces.forEach(piece => {
+        if (piece.color == p.color) {
+            findAvailableCoordinates(chessboard, piece).forEach(arr => {
+                const king = findPiece(chessboard, arr[0], arr[1])
+                if (king != undefined && king.type == "king") {
+                    king.checked = true
+                    checkedSide = king
+                    highlightCheckedKingCell(chessboard, arr)
+                    // findRestrictedCoordinates(chessboard, checkedSide)
+                }
+            })
         }
     })
 }
 
-function highlightCheckedKingCell(chessboard, arr) {
-    findCell(chessboard, arr[0], arr[1]).cellElement.classList.add("checked")
+function highlightCheckedKingCell(chessboard) {
+    chessboard.pieces.forEach(piece => {
+        if (piece.checked == true) {
+            findCell(chessboard, piece.x, piece.y).cellElement.classList.add("checked")
+        }
+    })
+
 }
 
 function setLastMovedPiece(chessboard, piece) {
@@ -1203,7 +1315,23 @@ function setLastMovedPiece(chessboard, piece) {
     piece.lastMovedPiece = true
 }
 
+
+function uniqBy(a, key) {
+    var index = [];
+    return a.filter(function (item) {
+        var k = key(item);
+        return index.indexOf(k) >= 0 ? false : index.push(k);
+    });
+}
+
+
 function findRestrictedCoordinates(chessboard, king) {
+    chessboard.cells.forEach(cell => {
+        if (cell.cellElement.classList.contains("restricted")) {
+            cell.cellElement.classList.remove("restricted")
+        }
+    })
+
     const restrictedCoordinates = []
     chessboard.pieces.forEach(piece => {
         if (king.color != piece.color) {
@@ -1213,8 +1341,14 @@ function findRestrictedCoordinates(chessboard, king) {
 
     console.log(restrictedCoordinates)
 
-    restrictedCoordinates.forEach(coordinate => {
-        
-        findCell(chessboard, coordinate[0], coordinate[1]).cellElement.classList.add("restricted")
-    })
+    const uniq = uniqBy(restrictedCoordinates, JSON.stringify);
+
+    console.log(uniq)
+
+    // uniq.forEach(coordinate => {
+
+    //     findCell(chessboard, coordinate[0], coordinate[1]).cellElement.classList.add("restricted")
+    // })
+
+    return uniq
 }

@@ -6,3 +6,10 @@
     - quân vua bên bị chiếu sẽ không thể đi vào các ô có tọa độ trên
 - cản quân chiếu khi bị chiếu
 - ăn quân chiếu khi bị chiếu
+
+
+//nhập thành sẽ bị cản khi quân vua bị chiếu hoặc có quân sẽ tấn công vào
+    khoảng trống giữa các vị trí nhập thành
+//quân vua sẽ không được tính khi tìm các nước bị hạn chế đối với vua đang chạy
+    khi bị chiêu
+    
