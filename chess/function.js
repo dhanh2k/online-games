@@ -62,15 +62,15 @@ export function createPieceElements(chessboardElement, reverse) {
     pieces.push(new Piece(4, 0, "queen", "white", reverse))
     pieces.push(new Piece(4, 7, "queen", "black", reverse))
 
-    pieces.push(new Piece(2, 0, "bishop", "white", reverse))
-    pieces.push(new Piece(5, 0, "bishop", "white", reverse))
-    pieces.push(new Piece(2, 7, "bishop", "black", reverse))
-    pieces.push(new Piece(5, 7, "bishop", "black", reverse))
+    // pieces.push(new Piece(2, 0, "bishop", "white", reverse))
+    // pieces.push(new Piece(5, 0, "bishop", "white", reverse))
+    // pieces.push(new Piece(2, 7, "bishop", "black", reverse))
+    // pieces.push(new Piece(5, 7, "bishop", "black", reverse))
 
-    // pieces.push(new Piece(0, 0, "rook", "white", reverse))
-    // pieces.push(new Piece(7, 0, "rook", "white", reverse))
-    // pieces.push(new Piece(0, 7, "rook", "black", reverse))
-    // pieces.push(new Piece(7, 7, "rook", "black", reverse))
+    pieces.push(new Piece(0, 0, "rook", "white", reverse))
+    pieces.push(new Piece(7, 0, "rook", "white", reverse))
+    pieces.push(new Piece(0, 7, "rook", "black", reverse))
+    pieces.push(new Piece(7, 7, "rook", "black", reverse))
 
     pieces.forEach(piece => {
         chessboardElement.appendChild(piece.pieceElement)
@@ -105,7 +105,9 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
             x = piece.x
             y = piece.y
 
-            findLegalMove(chessboard, piece)
+            if (checkedSide == undefined || checkedSide.color == piece.color) {
+                findLegalMove(chessboard, piece)
+            }
 
             document.addEventListener("mousemove", document.fn = function fn(e) {
                 piece.pieceElement.style.setProperty("cursor", "grabbing")
@@ -187,6 +189,7 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
                 console.log(checkedSide)
             })
         })
+
     })
 }
 
@@ -395,10 +398,11 @@ export function movePiece(chessboard, x, y, piece) {
             }
         }
         setLastMovedPiece(chessboard, piece)
+        isACheck(chessboard, piece)
     } else {
         piece.rePlacePiece(piece.x, piece.y)
     }
-    isACheck(chessboard, piece)
+
 }
 
 function findKingByColorPiece(chessboard, p) {
@@ -432,34 +436,36 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
 
             if (findCheck == false) {
                 if (piece.moved == false) {
-                    if (piece.color == "white") {
-                        // nước nhập thành bên trái
-                        if (findPiece(chessboard, 0, 0) != undefined) {
-                            if (findPiece(chessboard, 0, 0).moved == false) {
-                                kingCoordinates.push([x - 2, y])
+                    if (piece.checked == false) {
+                        if (piece.color == "white") {
+                            // nước nhập thành bên trái
+                            if (findPiece(chessboard, 0, 0) != undefined) {
+                                if (findPiece(chessboard, 0, 0).moved == false) {
+                                    kingCoordinates.push([x - 2, y])
+                                }
+                            }
+
+                            // nước nhập thành bên phải
+                            if (findPiece(chessboard, 7, 0) != undefined) {
+                                if (findPiece(chessboard, 7, 0).moved == false) {
+                                    kingCoordinates.push([x + 2, y], [x + 3, y])
+                                }
                             }
                         }
 
-                        // nước nhập thành bên phải
-                        if (findPiece(chessboard, 7, 0) != undefined) {
-                            if (findPiece(chessboard, 7, 0).moved == false) {
-                                kingCoordinates.push([x + 2, y], [x + 3, y])
+                        if (piece.color == "black") {
+                            // nước nhập thành bên trái
+                            if (findPiece(chessboard, 0, 7) != undefined) {
+                                if (findPiece(chessboard, 0, 7).moved == false) {
+                                    kingCoordinates.push([x - 2, y])
+                                }
                             }
-                        }
-                    }
 
-                    if (piece.color == "black") {
-                        // nước nhập thành bên trái
-                        if (findPiece(chessboard, 0, 7) != undefined) {
-                            if (findPiece(chessboard, 0, 7).moved == false) {
-                                kingCoordinates.push([x - 2, y])
-                            }
-                        }
-
-                        // nước nhập thành bên phải
-                        if (findPiece(chessboard, 7, 7) != undefined) {
-                            if (findPiece(chessboard, 7, 7).moved == false) {
-                                kingCoordinates.push([x + 2, y], [x + 3, y])
+                            // nước nhập thành bên phải
+                            if (findPiece(chessboard, 7, 7) != undefined) {
+                                if (findPiece(chessboard, 7, 7).moved == false) {
+                                    kingCoordinates.push([x + 2, y], [x + 3, y])
+                                }
                             }
                         }
                     }
@@ -1283,6 +1289,7 @@ function unHighlightLastMoved(chessboard) {
 }
 
 function isACheck(chessboard, p) {
+    let flagForChecked = 0
     chessboard.pieces.forEach(piece => {
         if (piece.color == p.color) {
             findAvailableCoordinates(chessboard, piece).forEach(arr => {
@@ -1290,12 +1297,13 @@ function isACheck(chessboard, p) {
                 if (king != undefined && king.type == "king") {
                     king.checked = true
                     checkedSide = king
-                    highlightCheckedKingCell(chessboard, arr)
-                    // findRestrictedCoordinates(chessboard, checkedSide)
+                    flagForChecked++
                 }
             })
         }
     })
+    highlightCheckedKingCell(chessboard)
+
 }
 
 function highlightCheckedKingCell(chessboard) {
@@ -1304,7 +1312,14 @@ function highlightCheckedKingCell(chessboard) {
             findCell(chessboard, piece.x, piece.y).cellElement.classList.add("checked")
         }
     })
+}
 
+function unHighlightCheckedKingCell(chessboard) {
+    chessboard.cells.forEach(cell => {
+        if (cell.cellElement.classList.contains("checked")) {
+            cell.cellElement.classList.remove("checked")
+        }
+    })
 }
 
 function setLastMovedPiece(chessboard, piece) {
@@ -1346,9 +1361,11 @@ function findRestrictedCoordinates(chessboard, king) {
     console.log(uniq)
 
     // uniq.forEach(coordinate => {
-
     //     findCell(chessboard, coordinate[0], coordinate[1]).cellElement.classList.add("restricted")
     // })
 
     return uniq
 }
+
+//thêm phần xử lý khi vua đang bị chiếu cho hàm findAvailableCoordinates()
+
