@@ -1,6 +1,7 @@
 import Piece from "./Piece.js"
 
 let checkedSide = undefined
+const checker = []
 
 export function createCellElements(chessboardElement) {
     const cells = []
@@ -71,6 +72,11 @@ export function createPieceElements(chessboardElement, reverse) {
     pieces.push(new Piece(7, 0, "rook", "white", reverse))
     pieces.push(new Piece(0, 7, "rook", "black", reverse))
     pieces.push(new Piece(7, 7, "rook", "black", reverse))
+
+    pieces.push(new Piece(1, 0, "knight", "white", reverse))
+    pieces.push(new Piece(6, 0, "knight", "white", reverse))
+    pieces.push(new Piece(1, 7, "knight", "black", reverse))
+    pieces.push(new Piece(6, 7, "knight", "black", reverse))
 
     pieces.forEach(piece => {
         chessboardElement.appendChild(piece.pieceElement)
@@ -186,7 +192,7 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
                 unHighlightAvailableMove(chessboard)
                 highlightLastMovedPiece(chessboard)
 
-                console.log(checkedSide)
+                // console.log(checkedSide)
             })
         })
 
@@ -405,9 +411,9 @@ export function movePiece(chessboard, x, y, piece) {
 
 }
 
-function findKingByColorPiece(chessboard, p) {
+function findKingByColor(chessboard, color) {
     return chessboard.pieces.filter(piece => {
-        return piece.color == p.color && piece.type == "king"
+        return piece.type == "king" && piece.color == color
     })[0]
 }
 
@@ -538,18 +544,37 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
             }
 
             //xử lý khi quân vua đang bị chiếu
-            if (checkedSide != undefined) {
-                if (checkedSide.color == piece.color) {
-                    console.log("Xu ly o day")
+            // if (checkedSide != undefined) {
+            //     // checker.length > 0
+            //     // const king = findKingByColor(chessboard, checker[0].color == "white" ? "black" : "white")
+            //     // if (checkedSide.color == piece.color) {
+
+            //     // }
+            //     console.log("Xu ly o day")
+            //     const test = availableCoordinates.filter(arr => {
+            //         return findRestrictedCoordinates(chessboard, checkedSide).some(arra => {
+            //             return arr[0] == arra[0] && arr[1] == arra[1]
+            //         }) == false
+            //     })
+            //     availableCoordinates.length = 0
+            //     availableCoordinates.push(...test)
+            //     console.log(availableCoordinates)
+            // }
+
+            if (checker.length > 0) {
+                const king = findKingByColor(chessboard, checker[0].color == "white" ? "black" : "white")
+                if (checker[0].color != piece.color) {
                     const test = availableCoordinates.filter(arr => {
-                        return findRestrictedCoordinates(chessboard, checkedSide).some(arra => {
+                        return findRestrictedCoordinates(chessboard, king).some(arra => {
                             return arr[0] == arra[0] && arr[1] == arra[1]
                         }) == false
                     })
+                    console.log(test)
                     availableCoordinates.length = 0
                     availableCoordinates.push(...test)
                     console.log(availableCoordinates)
                 }
+
             }
             //hết
 
@@ -829,6 +854,11 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 }
             })
 
+            if (checker.length > 1) {
+                availableCoordinates.length = 0
+                console.log("Can't")
+            }
+
             return availableCoordinates
         case "bishop":
             const bishopCoordinates = [
@@ -976,6 +1006,10 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 }
             })
 
+            if (checker.length > 1) {
+                availableCoordinates.length = 0
+            }
+
             return availableCoordinates
         case "knight":
             const knightCoordinates = [
@@ -1004,6 +1038,18 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 }
 
             })
+
+            if (checker.length == 1) {
+                const test = availableCoordinates.filter(arr => {
+                    return arr[0] == checker[0].x && arr[1] == checker[0].y
+                })
+                availableCoordinates.length = 0
+                availableCoordinates.push(...test)
+            }
+
+            if (checker.length > 1) {
+                availableCoordinates.length = 0
+            }
 
             return availableCoordinates
         case "rook":
@@ -1143,6 +1189,10 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 }
             })
 
+            if (checker.length > 1) {
+                availableCoordinates.length = 0
+            }
+
             return availableCoordinates
         case "pawn":
             if (piece.color == "white") {
@@ -1249,6 +1299,11 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                     }
                 })
             }
+
+            if (checker.length > 1) {
+                availableCoordinates.length = 0
+            }
+
             return availableCoordinates
     }
 }
@@ -1289,22 +1344,24 @@ function unHighlightLastMoved(chessboard) {
 }
 
 function isACheck(chessboard, p) {
-    let flagForChecked = 0
+    checker.length = 0
     chessboard.pieces.forEach(piece => {
         if (piece.color == p.color) {
             findAvailableCoordinates(chessboard, piece).forEach(arr => {
-                const king = findPiece(chessboard, arr[0], arr[1])
-                if (king != undefined && king.type == "king") {
-                    king.checked = true
-                    checkedSide = king
-                    flagForChecked++
+                if (findPiece(chessboard, arr[0], arr[1]) != undefined) {
+                    if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
+                        findPiece(chessboard, arr[0], arr[1]).checked = true
+                        checker.push(piece)
+                    }
                 }
             })
         }
     })
     highlightCheckedKingCell(chessboard)
-
+    console.log(checker)
 }
+
+// hôm nay sẽ làm tính năng ăn quân chiếu khi vua bị chiếu (nếu quân chiếu nhiều hơn 2 thì không ăn được)
 
 function highlightCheckedKingCell(chessboard) {
     chessboard.pieces.forEach(piece => {
