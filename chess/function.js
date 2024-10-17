@@ -16,6 +16,47 @@ export function createCellElements(chessboardElement) {
 export function createPieceElements(chessboardElement, reverse) {
     const pieces = []
 
+    pieces.push(new Piece(3, 0, "king", "white", reverse))
+    pieces.push(new Piece(3, 7, "king", "black", reverse))
+
+    pieces.push(new Piece(4, 0, "queen", "white", reverse))
+    pieces.push(new Piece(4, 7, "queen", "black", reverse))
+
+    pieces.push(new Piece(2, 0, "bishop", "white", reverse))
+    pieces.push(new Piece(5, 0, "bishop", "white", reverse))
+    pieces.push(new Piece(2, 7, "bishop", "black", reverse))
+    pieces.push(new Piece(5, 7, "bishop", "black", reverse))
+
+    pieces.push(new Piece(1, 0, "knight", "white", reverse))
+    pieces.push(new Piece(6, 0, "knight", "white", reverse))
+    pieces.push(new Piece(1, 7, "knight", "black", reverse))
+    pieces.push(new Piece(6, 7, "knight", "black", reverse))
+
+    pieces.push(new Piece(0, 0, "rook", "white", reverse))
+    pieces.push(new Piece(7, 0, "rook", "white", reverse))
+    pieces.push(new Piece(0, 7, "rook", "black", reverse))
+    pieces.push(new Piece(7, 7, "rook", "black", reverse))
+
+    pieces.push(new Piece(0, 1, "pawn", "white", reverse))
+    pieces.push(new Piece(1, 1, "pawn", "white", reverse))
+    pieces.push(new Piece(2, 1, "pawn", "white", reverse))
+    pieces.push(new Piece(3, 1, "pawn", "white", reverse))
+    pieces.push(new Piece(4, 1, "pawn", "white", reverse))
+    pieces.push(new Piece(5, 1, "pawn", "white", reverse))
+    pieces.push(new Piece(6, 1, "pawn", "white", reverse))
+    pieces.push(new Piece(7, 1, "pawn", "white", reverse))
+    pieces.push(new Piece(0, 6, "pawn", "black", reverse))
+    pieces.push(new Piece(1, 6, "pawn", "black", reverse))
+    pieces.push(new Piece(2, 6, "pawn", "black", reverse))
+    pieces.push(new Piece(3, 6, "pawn", "black", reverse))
+    pieces.push(new Piece(4, 6, "pawn", "black", reverse))
+    pieces.push(new Piece(5, 6, "pawn", "black", reverse))
+    pieces.push(new Piece(6, 6, "pawn", "black", reverse))
+    pieces.push(new Piece(7, 6, "pawn", "black", reverse))
+
+    // //for testing
+    // pieces.push(new Piece(3, 5, "king", "black", reverse))
+    // pieces.push(new Piece(4, 3, "king", "white", reverse))
     // pieces.push(new Piece(3, 0, "king", "white", reverse))
     // pieces.push(new Piece(3, 7, "king", "black", reverse))
 
@@ -27,56 +68,15 @@ export function createPieceElements(chessboardElement, reverse) {
     // pieces.push(new Piece(2, 7, "bishop", "black", reverse))
     // pieces.push(new Piece(5, 7, "bishop", "black", reverse))
 
-    // pieces.push(new Piece(1, 0, "knight", "white", reverse))
-    // pieces.push(new Piece(6, 0, "knight", "white", reverse))
-    // pieces.push(new Piece(1, 7, "knight", "black", reverse))
-    // pieces.push(new Piece(6, 7, "knight", "black", reverse))
-
     // pieces.push(new Piece(0, 0, "rook", "white", reverse))
     // pieces.push(new Piece(7, 0, "rook", "white", reverse))
     // pieces.push(new Piece(0, 7, "rook", "black", reverse))
     // pieces.push(new Piece(7, 7, "rook", "black", reverse))
 
-    // pieces.push(new Piece(0, 1, "pawn", "white", reverse))
-    // pieces.push(new Piece(1, 1, "pawn", "white", reverse))
-    // pieces.push(new Piece(2, 1, "pawn", "white", reverse))
-    // pieces.push(new Piece(3, 1, "pawn", "white", reverse))
-    // pieces.push(new Piece(4, 1, "pawn", "white", reverse))
-    // pieces.push(new Piece(5, 1, "pawn", "white", reverse))
-    // pieces.push(new Piece(6, 1, "pawn", "white", reverse))
-    // pieces.push(new Piece(7, 1, "pawn", "white", reverse))
-    // pieces.push(new Piece(0, 6, "pawn", "black", reverse))
-    // pieces.push(new Piece(1, 6, "pawn", "black", reverse))
-    // pieces.push(new Piece(2, 6, "pawn", "black", reverse))
-    // pieces.push(new Piece(3, 6, "pawn", "black", reverse))
-    // pieces.push(new Piece(4, 6, "pawn", "black", reverse))
-    // pieces.push(new Piece(5, 6, "pawn", "black", reverse))
-    // pieces.push(new Piece(6, 6, "pawn", "black", reverse))
-    // pieces.push(new Piece(7, 6, "pawn", "black", reverse))
-
-    // //for testing
-    // pieces.push(new Piece(3, 5, "king", "black", reverse))
-    // pieces.push(new Piece(4, 3, "king", "white", reverse))
-    pieces.push(new Piece(3, 0, "king", "white", reverse))
-    pieces.push(new Piece(3, 7, "king", "black", reverse))
-
-    pieces.push(new Piece(4, 0, "queen", "white", reverse))
-    pieces.push(new Piece(4, 7, "queen", "black", reverse))
-
-    // pieces.push(new Piece(2, 0, "bishop", "white", reverse))
-    // pieces.push(new Piece(5, 0, "bishop", "white", reverse))
-    // pieces.push(new Piece(2, 7, "bishop", "black", reverse))
-    // pieces.push(new Piece(5, 7, "bishop", "black", reverse))
-
-    pieces.push(new Piece(0, 0, "rook", "white", reverse))
-    pieces.push(new Piece(7, 0, "rook", "white", reverse))
-    pieces.push(new Piece(0, 7, "rook", "black", reverse))
-    pieces.push(new Piece(7, 7, "rook", "black", reverse))
-
-    pieces.push(new Piece(1, 0, "knight", "white", reverse))
-    pieces.push(new Piece(6, 0, "knight", "white", reverse))
-    pieces.push(new Piece(1, 7, "knight", "black", reverse))
-    pieces.push(new Piece(6, 7, "knight", "black", reverse))
+    // pieces.push(new Piece(1, 0, "knight", "white", reverse))
+    // pieces.push(new Piece(6, 0, "knight", "white", reverse))
+    // pieces.push(new Piece(1, 7, "knight", "black", reverse))
+    // pieces.push(new Piece(6, 7, "knight", "black", reverse))
 
     pieces.forEach(piece => {
         chessboardElement.appendChild(piece.pieceElement)
@@ -111,8 +111,18 @@ export function dragPieceOnDesktop(chessboard, chessboardElement) {
             x = piece.x
             y = piece.y
 
-            if (checkedSide == undefined || checkedSide.color == piece.color) {
+            // if (checkedSide == undefined || checkedSide.color == piece.color) {
+            //     findLegalMove(chessboard, piece)
+            // }
+
+            if (checker.length == 0) {
                 findLegalMove(chessboard, piece)
+            }
+
+            if (checker.length > 0) {
+                if (checker[0].color != piece.color) {
+                    findLegalMove(chessboard, piece)
+                }
             }
 
             document.addEventListener("mousemove", document.fn = function fn(e) {
@@ -543,24 +553,6 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 availableCoordinates.push(...rightCastlingMoves)
             }
 
-            //xử lý khi quân vua đang bị chiếu
-            // if (checkedSide != undefined) {
-            //     // checker.length > 0
-            //     // const king = findKingByColor(chessboard, checker[0].color == "white" ? "black" : "white")
-            //     // if (checkedSide.color == piece.color) {
-
-            //     // }
-            //     console.log("Xu ly o day")
-            //     const test = availableCoordinates.filter(arr => {
-            //         return findRestrictedCoordinates(chessboard, checkedSide).some(arra => {
-            //             return arr[0] == arra[0] && arr[1] == arra[1]
-            //         }) == false
-            //     })
-            //     availableCoordinates.length = 0
-            //     availableCoordinates.push(...test)
-            //     console.log(availableCoordinates)
-            // }
-
             if (checker.length > 0) {
                 const king = findKingByColor(chessboard, checker[0].color == "white" ? "black" : "white")
                 if (checker[0].color != piece.color) {
@@ -569,15 +561,11 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                             return arr[0] == arra[0] && arr[1] == arra[1]
                         }) == false
                     })
-                    console.log(test)
                     availableCoordinates.length = 0
                     availableCoordinates.push(...test)
-                    console.log(availableCoordinates)
                 }
 
             }
-            //hết
-
 
             return availableCoordinates
         case "queen":
@@ -854,9 +842,16 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 }
             })
 
-            if (checker.length > 1) {
+            if (checker.length > 1 && checker[0].color != piece.color) {
                 availableCoordinates.length = 0
-                console.log("Can't")
+            }
+
+            if (checker.length == 1 && checker[0].color != piece.color) {
+                const test = availableCoordinates.filter(arr => {
+                    return arr[0] == checker[0].x && arr[1] == checker[0].y
+                })
+                availableCoordinates.length = 0
+                availableCoordinates.push(...test)
             }
 
             return availableCoordinates
@@ -1006,8 +1001,16 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 }
             })
 
-            if (checker.length > 1) {
+            if (checker.length > 1 && checker[0].color != piece.color) {
                 availableCoordinates.length = 0
+            }
+
+            if (checker.length == 1 && checker[0].color != piece.color) {
+                const test = availableCoordinates.filter(arr => {
+                    return arr[0] == checker[0].x && arr[1] == checker[0].y
+                })
+                availableCoordinates.length = 0
+                availableCoordinates.push(...test)
             }
 
             return availableCoordinates
@@ -1039,7 +1042,7 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
 
             })
 
-            if (checker.length == 1) {
+            if (checker.length == 1 && checker[0].color != piece.color) {
                 const test = availableCoordinates.filter(arr => {
                     return arr[0] == checker[0].x && arr[1] == checker[0].y
                 })
@@ -1047,7 +1050,7 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 availableCoordinates.push(...test)
             }
 
-            if (checker.length > 1) {
+            if (checker.length > 1 && checker[0].color != piece.color) {
                 availableCoordinates.length = 0
             }
 
@@ -1189,8 +1192,16 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 }
             })
 
-            if (checker.length > 1) {
+            if (checker.length > 1 && checker[0].color != piece.color) {
                 availableCoordinates.length = 0
+            }
+
+            if (checker.length == 1 && checker[0].color != piece.color) {
+                const test = availableCoordinates.filter(arr => {
+                    return arr[0] == checker[0].x && arr[1] == checker[0].y
+                })
+                availableCoordinates.length = 0
+                availableCoordinates.push(...test)
             }
 
             return availableCoordinates
@@ -1300,8 +1311,16 @@ export function findAvailableCoordinates(chessboard, piece, findCheck = false) {
                 })
             }
 
-            if (checker.length > 1) {
+            if (checker.length > 1 && checker[0].color != piece.color) {
                 availableCoordinates.length = 0
+            }
+
+            if (checker.length == 1 && checker[0].color != piece.color) {
+                const test = availableCoordinates.filter(arr => {
+                    return arr[0] == checker[0].x && arr[1] == checker[0].y
+                })
+                availableCoordinates.length = 0
+                availableCoordinates.push(...test)
             }
 
             return availableCoordinates
@@ -1352,6 +1371,7 @@ function isACheck(chessboard, p) {
                     if (findPiece(chessboard, arr[0], arr[1]).type == "king") {
                         findPiece(chessboard, arr[0], arr[1]).checked = true
                         checker.push(piece)
+                        console.log(coordinatesFormCheckerToTheKing(chessboard, piece, findPiece(chessboard, arr[0], arr[1])))
                     }
                 }
             })
@@ -1360,8 +1380,6 @@ function isACheck(chessboard, p) {
     highlightCheckedKingCell(chessboard)
     console.log(checker)
 }
-
-// hôm nay sẽ làm tính năng ăn quân chiếu khi vua bị chiếu (nếu quân chiếu nhiều hơn 2 thì không ăn được)
 
 function highlightCheckedKingCell(chessboard) {
     chessboard.pieces.forEach(piece => {
@@ -1387,7 +1405,6 @@ function setLastMovedPiece(chessboard, piece) {
     piece.lastMovedPiece = true
 }
 
-
 function uniqBy(a, key) {
     var index = [];
     return a.filter(function (item) {
@@ -1395,7 +1412,6 @@ function uniqBy(a, key) {
         return index.indexOf(k) >= 0 ? false : index.push(k);
     });
 }
-
 
 function findRestrictedCoordinates(chessboard, king) {
     chessboard.cells.forEach(cell => {
@@ -1411,11 +1427,11 @@ function findRestrictedCoordinates(chessboard, king) {
         }
     })
 
-    console.log(restrictedCoordinates)
+    // console.log(restrictedCoordinates)
 
     const uniq = uniqBy(restrictedCoordinates, JSON.stringify);
 
-    console.log(uniq)
+    // console.log(uniq)
 
     // uniq.forEach(coordinate => {
     //     findCell(chessboard, coordinate[0], coordinate[1]).cellElement.classList.add("restricted")
@@ -1424,5 +1440,86 @@ function findRestrictedCoordinates(chessboard, king) {
     return uniq
 }
 
-//thêm phần xử lý khi vua đang bị chiếu cho hàm findAvailableCoordinates()
+function coordinatesFormCheckerToTheKing(chessboard, checker, king) {
+    // xác định loại quân checker
+    // nếu là tốt, mã thì trả về ô mà nó đứng
+    // nếu là xe, tượng, hậu thì tìm đường từ checker đến vua
+    // bằng cách xác định loại quân, hướng đi dựa trên tọa độ
+    // cuối cùng trả về tọa độ của những ô hợp lệ
+
+    const wayToTheKing = findAvailableCoordinates(chessboard, checker).filter(arr => {
+        switch (checker.type) {
+            case "queen":
+                // chéo lên trái
+                if (king.x - checker.x < 0 && king.y - checker.y < 0) {
+                    return arr[0] - checker.x < 0 && arr[1] - checker.y < 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // chéo lên phải
+                if (king.x - checker.x > 0 && king.y - checker.y < 0) {
+                    return arr[0] - checker.x > 0 && arr[1] - checker.y < 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // chéo xuống trái
+                if (king.x - checker.x < 0 && king.y - checker.y > 0) {
+                    return arr[0] - checker.x < 0 && arr[1] - checker.y > 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // chéo xuống phải
+                if (king.x - checker.x > 0 && king.y - checker.y > 0) {
+                    return arr[0] - checker.x > 0 && arr[1] - checker.y > 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // hướng lên
+                if (king.x - checker.x == 0 && king.y - checker.y < 0) {
+                    return arr[0] - checker.x == 0 && arr[1] - checker.y < 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // hướng xuống
+                if (king.x - checker.x == 0 && king.y - checker.y > 0) {
+                    return arr[0] - checker.x == 0 && arr[1] - checker.y > 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // sang trái
+                if (king.x - checker.x < 0 && king.y - checker.y == 0) {
+                    return arr[0] - checker.x < 0 && arr[1] - checker.y == 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // sang phải
+                if (king.x - checker.x > 0 && king.y - checker.y == 0) {
+                    return arr[0] - checker.x > 0 && arr[1] - checker.y == 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+            case "bishop":
+                // chéo lên trái
+                if (king.x - checker.x < 0 && king.y - checker.y < 0) {
+                    return arr[0] - checker.x < 0 && arr[1] - checker.y < 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // chéo lên phải
+                if (king.x - checker.x > 0 && king.y - checker.y < 0) {
+                    return arr[0] - checker.x > 0 && arr[1] - checker.y < 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // chéo xuống trái
+                if (king.x - checker.x < 0 && king.y - checker.y > 0) {
+                    return arr[0] - checker.x < 0 && arr[1] - checker.y > 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // chéo xuống phải
+                if (king.x - checker.x > 0 && king.y - checker.y > 0) {
+                    return arr[0] - checker.x > 0 && arr[1] - checker.y > 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+            case "rook":
+                // hướng lên
+                if (king.x - checker.x == 0 && king.y - checker.y < 0) {
+                    return arr[0] - checker.x == 0 && arr[1] - checker.y < 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // hướng xuống
+                if (king.x - checker.x == 0 && king.y - checker.y > 0) {
+                    return arr[0] - checker.x == 0 && arr[1] - checker.y > 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // sang trái
+                if (king.x - checker.x < 0 && king.y - checker.y == 0) {
+                    return arr[0] - checker.x < 0 && arr[1] - checker.y == 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+                // sang phải
+                if (king.x - checker.x > 0 && king.y - checker.y == 0) {
+                    return arr[0] - checker.x > 0 && arr[1] - checker.y == 0 && (arr[0] != king.x || arr[1] != king.y)
+                }
+        }
+    })
+    wayToTheKing.unshift([checker.x, checker.y])
+
+    return wayToTheKing
+}
 

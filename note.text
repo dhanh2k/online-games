@@ -6,6 +6,8 @@
     - quân vua bên bị chiếu sẽ không thể đi vào các ô có tọa độ trên
 - cản quân chiếu khi bị chiếu
 - ăn quân chiếu khi bị chiếu
+    - bằng cách lấy tất cả các nước đi của quân cờ bên bị chiếu
+    và so sánh với tất cả các nước có thể đi của quân chiếu
 
 
 //nhập thành sẽ bị cản khi quân vua bị chiếu hoặc có quân sẽ tấn công vào
@@ -13,3 +15,12 @@
 //quân vua sẽ không được tính khi tìm các nước bị hạn chế đối với vua đang chạy
     khi bị chiêu
     
+
+// 
+
+--- xây dựng hàm tìm đường từ quân chiếu tới vua
+        - sẽ giải quyết được vấn đề ăn quân chiếu và cả chặn quân chiếu
+
+
+---+--- ngày mai sẽ xử lý phần ăn quân tấn công hoặc chặn quân tấn công
+- đã có sẵn hàm tìm quân vua đang bị chiếu
