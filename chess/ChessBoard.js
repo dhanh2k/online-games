@@ -1,4 +1,4 @@
-import { createCellElements, createPieceElements } from "./function.js"
+import { createCellElements, createPieceElements, translateX, translateY } from "./function.js"
 
 export default class ChessBoard {
     constructor(chessboardElement) {
@@ -23,5 +23,12 @@ class Cell {
         } else {
             this.cellElement.classList.add("black")
         }
+        if(this.y == 0){
+            this.cellElement.innerHTML = this.cellElement.innerHTML + translateX(this.x)
+        }
+        if(this.x == 0){
+            this.cellElement.innerHTML = this.cellElement.innerHTML + translateY(this.y)
+        }
+        // this.cellElement.innerHTML = translateX(this.x) + " " + translateY(this.y)
     }
 }

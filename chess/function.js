@@ -81,16 +81,19 @@ export function setPlacementForMobile() {
     });
 }
 
-export function endGame(chessboard, color){
+export function endGame(chessboard, color) {
     const avaiMove = []
     chessboard.pieces.forEach(piece => {
-        if(piece.color == color){
+        if (piece.color == color) {
             avaiMove.push(...findAvailableCoordinates(chessboard, piece))
         }
     })
 
-    if(avaiMove.length == 0){
+    if (avaiMove.length == 0) {
         console.log("END GAME?!")
+        return true
+    }else{
+        return false
     }
 }
 
@@ -324,8 +327,6 @@ export function findCell(chessboard, x, y) {
     })[0]
 }
 
-
-
 export function isKingSafe(chessboard, king) {
     if (!findRestrictedCoordinates(chessboard, king).every(arr => {
         return arr[0] == king.x && arr[1] == king.y
@@ -339,10 +340,13 @@ export function isKingSafe(chessboard, king) {
 export function movePiece(chessboard, x, y, piece) {
     const targetCell = findCell(chessboard, x, y)
     const targetPiece = findPiece(chessboard, x, y)
+    let castling
+    let isCapture = false
     if (targetCell.cellElement.classList.contains("available")) {
         if (targetPiece) {
             targetPiece.pieceElement.remove()
             chessboard.pieces.splice(chessboard.pieces.indexOf(targetPiece), 1)
+            isCapture = true
             piece.rePlacePiece(x, y)
             if (piece.type == "pawn") {
                 if (y == 0 || y == 7) {
@@ -380,11 +384,13 @@ export function movePiece(chessboard, x, y, piece) {
                                 rook = findPiece(chessboard, 7, 0)
                                 rook.rePlacePiece(4, 0)
                                 piece.rePlacePiece(x, y)
+                                castling = "0-0-0"
                             }
                             if (x - piece.x == -2) {
                                 rook = findPiece(chessboard, 0, 0)
                                 rook.rePlacePiece(2, 0)
                                 piece.rePlacePiece(x, y)
+                                castling = "0-0"
                             } else {
                                 piece.rePlacePiece(x, y)
                             }
@@ -394,11 +400,14 @@ export function movePiece(chessboard, x, y, piece) {
                                 rook = findPiece(chessboard, 7, 7)
                                 rook.rePlacePiece(4, 7)
                                 piece.rePlacePiece(x, y)
+                                castling = "0-0-0"
+
                             }
                             if (x - piece.x == -2) {
                                 rook = findPiece(chessboard, 0, 7)
                                 rook.rePlacePiece(2, 7)
                                 piece.rePlacePiece(x, y)
+                                castling = "0-0"
                             } else {
                                 piece.rePlacePiece(x, y)
                             }
@@ -410,17 +419,35 @@ export function movePiece(chessboard, x, y, piece) {
             }
         }
         setLastMovedPiece(chessboard, piece)
-        
+
         turn++
-        
-        
+
+
         isKingSafe(chessboard, findKingByColor(chessboard, piece.color))
-        isACheck(chessboard, piece)
-        endGame(chessboard, turn % 2 == 0 ? "white" : "black")
+        let isCheck = isACheck(chessboard, piece)
+        let isEnd = endGame(chessboard, turn % 2 == 0 ? "white" : "black")
+        printTheMove(piece, isCheck, isEnd, isCapture, castling)
     } else {
         piece.rePlacePiece(piece.x, piece.y)
     }
+}
 
+function printTheMove(piece, isCheck, isEnd, isCapture, castling){
+    let text = ""
+    text += translatePiece(piece.type) + (isCapture == true ? "x" : "") + translateX(piece.x) + translateY(piece.y)
+    if(isCheck == true){
+        if(isEnd == true){
+            text += "#"
+        }else{
+            text += "+"
+        }
+    }
+
+    if(castling != undefined){
+        console.log(castling)
+    }else{
+        console.log(text)
+    }
 }
 
 function findKingByColor(chessboard, color) {
@@ -1437,7 +1464,11 @@ function isACheck(chessboard, p) {
         }
     })
     highlightCheckedKingCell(chessboard)
-    // console.log(checker)
+    if(checker.length == 0){
+        return false
+    }else{
+        return true
+    }
 }
 
 function highlightCheckedKingCell(chessboard) {
@@ -1568,3 +1599,61 @@ function coordinatesFormCheckerToTheKing(chessboard, checker, king) {
     return wayToTheKing
 }
 
+export function translateX(coordinate) {
+    switch (coordinate) {
+        case 0:
+            return "h"
+        case 1:
+            return "g"
+        case 2:
+            return "f"
+        case 3:
+            return "e"
+        case 4:
+            return "d"
+        case 5:
+            return "c"
+        case 6:
+            return "b"
+        case 7:
+            return "a"
+    }
+}
+
+export function translateY(coordinate) {
+    switch (coordinate) {
+        case 0:
+            return "1"
+        case 1:
+            return "2"
+        case 2:
+            return "3"
+        case 3:
+            return "4"
+        case 4:
+            return "5"
+        case 5:
+            return "6"
+        case 6:
+            return "7"
+        case 7:
+            return "8"
+    }
+}
+
+export function translatePiece(pieceType){
+    switch(pieceType){
+        case "king":
+            return "K"
+        case "queen":
+            return "Q"
+        case "bishop":
+            return "B"
+        case "knight":
+            return "K"
+        case "rook":
+            return "R"
+        case "pawn":
+            return ""
+    }
+}
